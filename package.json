@@ -4,8 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-     "start": "electron .",
-     "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,8 @@
   "homepage": "https://github.com/ashokbhayal/pos#readme",
   "devDependencies": {
     "electron": "^10.1.4"
+  },
+  "dependencies": {
+    "sqlite3": "^5.0.0"
   }
 }
