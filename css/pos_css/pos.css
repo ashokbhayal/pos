@@ -5,6 +5,9 @@ body{
    margin-right: 20px;
 }
 
-#price_textArea, #party_textArea {
+#price_textArea,
+#party_textArea,
+#qty_textArea,
+#item_desc {
   resize: none;
 }

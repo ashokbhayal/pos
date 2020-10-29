@@ -1,14 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+   <meta charset="UTF-8">
+   <title>POS Test Software</title>
+   <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+   <link rel="stylesheet" href="./css/bootstrap.min.css" />
+   <link rel="stylesheet" href="./css/pos_css/pos.css" />
+   <script type="text/javascript" src="./price_calulator.js"></script>
 </head>
 <body>
-    <h1>Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+   <h1>Test Software</h1>
+
+   </br>
+   <div class="row">
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+         <textarea class="form-control param_textarea" rows="1" id="price_textArea" placeholder="Purchase Price"></textarea>
+      </div>
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+         <textarea class="form-control param_textarea" rows="1" id="party_textArea" placeholder="Party Name"></textarea>
+      </div>
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+         <textarea class="form-control param_textarea" rows="1" id="qty_textArea" placeholder="Qty"></textarea>
+      </div>
+      <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+         <textarea class="form-control param_textarea" rows="1" id="item_desc" placeholder="Item Description"></textarea>
+      </div>
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+         <button type="button" class="btn btn-outline-primary" onclick="price_calulator()">Print</button>
+      </div>
+   </div>
+   </br>
+   <div class="row">
+   </div>
+
 </body>
 </html>
