@@ -5,6 +5,12 @@ body{
    margin-right: 20px;
 }
 
+@page
+{
+   size: 5.5in 5.5in;
+}
+
+
 #price_textArea,
 #party_textArea,
 #qty_textArea,

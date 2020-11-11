@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "electron-pos-printer": "^1.2.4",
+    "pdf-to-printer": "^1.5.2",
     "sqlite3": "^5.0.0"
   }
 }

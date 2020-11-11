@@ -924,6 +924,11 @@ path-is-absolute@^1.0.0:
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
   integrity sha1-F0uSaHNVNP+8es5r9TpanhtcX18=
 
+pdf-to-printer@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/pdf-to-printer/-/pdf-to-printer-1.5.2.tgz#7a74455517b26df4b1d8e6c38675874a7d2e716b"
+  integrity sha512-VIbTudawc73oc6ggfTe6JtmjXfD7Z1RBJgOXUYl5uQpjTbFEm3tzGslKG1qLs3KdLKX2MQ0NyB7p5iRH5y3OkQ==
+
 pend@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
