@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/ashokbhayal/pos#readme",
   "devDependencies": {
-    "electron": "^10.1.4"
+    "electron": "^10.1.4",
+    "electron-rebuild": "^2.3.2"
   },
   "dependencies": {
     "electron-pos-printer": "^1.2.4",

@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
+var print_StickerFn = require('./print_Sticker');
 
 
 var shop_Inital = ['E', 'V', 'I', 'M', 'A', 'L', 'S', 'T', 'O', 'R'];
@@ -61,6 +62,17 @@ function price_calulator()
    selling_Price = landing_Price * 1.7;
    selling_Price = parseInt(selling_Price);
 
+   var lastVal = 0;
+   lastVal = selling_Price % 10;
+   if(lastVal != 0)
+   {
+       var addVal = 10 - lastVal;
+       if(lastVal >= 1 && lastVal <= 4)
+          selling_Price -= lastVal;
+       else
+          selling_Price += addVal;
+   }
+
    console.log("Landing cost is " + landing_Price);
 
    item_Details.date = purchase_date;
@@ -90,6 +102,7 @@ function price_calulator()
    console.log(coded_Inital);
 
    insert_inDB(item_Details);
+   print_StickerFn(item_Details);
 
    coded_Inital = [];
 };
@@ -106,7 +119,7 @@ db.run('CREATE TABLE IF NOT EXISTS inventory(id INTEGER PRIMARY KEY AUTOINCREMEN
                                              date TEXT NOT NULL, \
                                              barCode INTEGER NOT NULL, \
                                              description TEXT NOT NULL, \
-                                             purchasePrice INTEGER NOT NULL, \
+                                             landingPrice INTEGER NOT NULL, \
                                              sellingPrice INTEGER NOT NULL, \
                                              quantity INTEGER NOT NULL, \
                                              partyName TEXT NOT NULL);',
@@ -124,7 +137,7 @@ function insert_inDB()
    db.run('INSERT into inventory(barCode , \
                                  date, \
                                  description, \
-                                 purchasePrice, \
+                                 landingPrice, \
                                  sellingPrice, \
                                  quantity, \
                                  partyName) \
@@ -152,7 +165,7 @@ function insert_inDB()
          console.log("Error " + err);
       }
       rows.forEach((item) => {
-         console.log("Item stored in DB is " + item);
+         console.log("Item stored in DB is ", item);
       });
    })
 }
@@ -167,4 +180,16 @@ function close_DB()
      }
      console.log('Close the database connection.');
    });
+}
+
+
+
+function test_Btn()
+{
+   document.getElementById("price_textArea").value = 01;
+   document.getElementById("party_textArea").value = "AB";
+   document.getElementById("qty_textArea").value = 10;
+   document.getElementById("item_desc").value = "Shirt";
+
+   price_calulator();
 }
