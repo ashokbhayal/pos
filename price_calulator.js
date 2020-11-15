@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
+
 var print_StickerFn = require('./print_Sticker');
 
 
@@ -7,11 +8,14 @@ var coded_Inital = [];
 var party_Name;
 var description;
 var item_Details = new Object();
+var lastEntry = new Object();
+var prev_barCode = 0;
+var next_barCode = 0;
+var barCode_DefaultVal = 5000;
+
+var lastEntryFlg = false;
 
 var date = new Date;
-
-
-var counter = 0;
 
 function price_calulator()
 {
@@ -101,8 +105,21 @@ function price_calulator()
    coded_Inital = coded_Inital.concat(party_Name);
    console.log(coded_Inital);
 
-   insert_inDB(item_Details);
-   print_StickerFn(item_Details);
+   //updateDB();
+   getLastEntry().then(data =>
+   {
+      console.log("Resolved promise ", data);
+      // console.log(data[0]);
+      prev_barCode = data[0].barCode;
+      next_barCode = ++prev_barCode;
+      insert_inDB(item_Details);
+      print_StickerFn(item_Details, next_barCode);
+   }) .catch(err => {
+      // Assuming first entry
+      next_barCode = ++ barCode_DefaultVal;
+      insert_inDB(item_Details);
+      print_StickerFn(item_Details, next_barCode);
+   });
 
    coded_Inital = [];
 };
@@ -130,7 +147,9 @@ db.run('CREATE TABLE IF NOT EXISTS inventory(id INTEGER PRIMARY KEY AUTOINCREMEN
                                                    console.log(err);
                                                 }
                                                 console.log("Table created");
+
                                              })
+
 
 function insert_inDB()
 {
@@ -142,7 +161,7 @@ function insert_inDB()
                                  quantity, \
                                  partyName) \
                                  values (?, ?, ?, ?, ?, ?, ?)',
-                                 [counter,
+                                 [next_barCode,
                                   item_Details.date,
                                   item_Details.description,
                                   item_Details.landingPrice,
@@ -158,18 +177,32 @@ function insert_inDB()
       }
    })
 
-   db.all('SELECT * FROM inventory', function(err, rows)
-   {
-      if(err)
-      {
-         console.log("Error " + err);
-      }
-      rows.forEach((item) => {
-         console.log("Item stored in DB is ", item);
-      });
-   })
+   // db.all('SELECT * FROM inventory', function(err, rows)
+   // {
+   //    if(err)
+   //    {
+   //       console.log("Error " + err);
+   //    }
+   //    rows.forEach((item) => {
+   //       console.log("Item stored in DB is ", item);
+   //    });
+   // })
 }
 
+function getLastEntry()
+{
+   return new Promise ((resolve, reject) =>
+   {
+      db.all('SELECT * FROM inventory ORDER BY id DESC LIMIT 1', (err, data) =>
+      {
+         if(err)
+            reject(err);
+         else
+            resolve(data);
+
+      });
+   });
+}
 
 // close the database connection
 function close_DB()

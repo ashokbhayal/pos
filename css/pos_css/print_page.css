@@ -27,6 +27,7 @@ body
 h2
 {
    margin-top: inherit;
+   margin-bottom: 10px;
 }
 
 p
@@ -35,11 +36,25 @@ p
    margin: 10px;
    font-weight: bold;
    line-height: 1.3;
+   margin-left: 0;
+}
+
+.mrp_p
+{
+   float: left;
+   margin: 0;
 }
 
 .landing_Price
 {
    float: right;
+}
+
+#barcode
+{
+   float: right;
+   margin: 0;
+   width: 0.8in;
 }
 
 #left_Label
