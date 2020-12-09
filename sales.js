@@ -1,5 +1,5 @@
-// const sqlite3 = require('sqlite3').verbose();
-const $ = require('jquery');
+//const sqlite3 = require('sqlite3').verbose();
+// const $ = require('jquery');
 
 var enteredBarCode = "";
 var itemData = {};
@@ -136,120 +136,6 @@ function enter_Content(event)
             subTotal = 0;
             discount = 0;
 
-            // TODO: Uncomment later
-            // const getEntryFromTable = document.getElementById(barCode);
-            // console.log(getEntryFromTable);
-            //
-            // if(getEntryFromTable == null)
-            // {
-            //    // sale_list.push(data[0]);
-            //    // console.log(sale_list);
-            //
-            //    var row = document.createElement('tr') ;
-            //
-            //    //* use a create table row function,
-            //    //* which takes data and returns element
-            //    const desc = document.createElement("td")
-            //
-            //    const qty = document.createElement("td")
-            //    qty.setAttribute("name", "name_qty");
-            //
-            //    const sp = document.createElement("td")
-            //    sp.setAttribute("name", "sp");
-            //
-            //    const delContainer = document.createElement('td')
-            //    const delButton = document.createElement("button")
-            //
-            //    const dropDownContainer = document.createElement('td')
-            //    const dropDownSel = document.createElement("select")
-            //    dropDownSel.setAttribute("onchange", "add_subTotal(0, this.value)")
-            //    const optionYes = document.createElement("option")
-            //    const optionNo = document.createElement("option")
-            //
-            //    // total_ob.subTotal = sellingPrice;
-            //    // total_ob.discount = (sellingPrice-(sellingPrice * 0.1));
-            //    // total_ob.total = total_ob.subTotal - total_ob.discount;
-            //
-            //    optionYes.text = "Yes";
-            //    optionYes.value = (sellingPrice-(sellingPrice * 0.1));
-            //
-            //    optionNo.text = "No";
-            //    optionNo.value = sellingPrice;
-            //
-            //    console.log(optionYes, optionNo);
-            //
-            //    row.setAttribute("id", barCode);
-            //
-            //    // Discount Yes or No
-            //    dropDownSel.setAttribute("class", "mdb-select md-form")
-            //    // dropDownBtn.setAttribute("data-toggle", "collapse");
-            //    // dropDownBtn.setAttribute("data-target", "#table");
-            //    dropDownContainer.style.textAlign = "right"
-            //    dropDownSel.add(optionYes);
-            //    dropDownSel.add(optionNo);
-            //    // dropDownBtn.setAttribute("")
-            //    dropDownContainer.appendChild(dropDownSel);
-            //
-            //    // Description of product
-            //    desc.textContent = description
-            //    desc.style.textAlign = "left"
-            //
-            //    // Delete Button
-            //    delButton.setAttribute("class","btn btn-primary row-delete")
-            //    delButton.name = barCode
-            //    delButton.textContent = "DELETE"
-            //    delContainer.appendChild(delButton)
-            //    delContainer.style.textAlign = "center"
-            //
-            //    // Quantity
-            //    qty.textContent = 1;
-            //    qty.style.textAlign = "center"
-            //
-            //    // Selling Price
-            //    sp.textContent = sellingPrice
-            //    sp.style.textAlign = "right"
-            //
-            //
-            //    row.append( desc, qty, sp, delContainer, dropDownContainer)
-            //    table.append(row)
-            // }
-            // else
-            // {
-            //    console.log(getEntryFromTable.getElementsByName("name_qty"));
-            //    var incCnt = parseInt(document.getElementsByName("name_qty")[0].textContent);
-            //    incCnt = incCnt + 1;
-            //    document.getElementsByName("name_qty")[0].textContent = incCnt;
-            //
-            //    var incSP = parseInt(getEntryFromTable.getElementsByClassName("sp")[0].textContent)
-            // }
-
-            // add_subTotal(sellingPrice, dropDownSel.value);
-            // var row = table.insertRow(-1);
-            //
-            // // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
-            // var cell1 = row.insertCell(0);
-            // var cell2 = row.insertCell(1);
-            // var cell3 = row.insertCell(2);
-            // var cell4 = row.insertCell(3);
-            //
-            // console.log("Received ", data);
-            // // Add some text to the new cells:
-            // cell1.innerHTML = data[0].description;
-            // cell2.innerHTML = data[0].id;
-            // cell3.innerHTML = data[0].sellingPrice;
-            // cell4.innerHTML = data[0].barCode;
-            //
-            // cell3.style.textAlign = "right";
-            // cell2.style.textAlign = "center";
-            //
-            // subtotal_Val = parseInt(subtotal_ValID.innerHTML);
-            // if(isNaN(subtotal_Val))
-            //    subtotal_Val = 0;
-            // console.log(subtotal_Val);
-            //
-            // subtotal_Val += data[0].sellingPrice;
-            // subtotal_ValID.innerHTML = subtotal_Val;
-            //
             clear_Barcode(event);
          }
          else
@@ -282,14 +168,23 @@ function getItemfromDB(enteredBarCode)
    });
 }
 
+
+function __updateInventory()
+{
+   console.log("In sales file ", sale_list);
+   priceCalculator_UpdateDB(sale_list);
+}
+
 function sales_print()
 {
-   console.log(getEntryFromTable.getElementsByName("name_qty"));
-   var incCnt = parseInt(document.getElementsByName("name_qty")[0].textContent);
-   incCnt = incCnt + 1;
-   document.getElementsByName("name_qty")[0].textContent = incCnt;
+   // console.log(getEntryFromTable.getElementsByName("name_qty"));
+   // var incCnt = parseInt(document.getElementsByName("name_qty")[0].textContent);
+   // incCnt = incCnt + 1;
+   // document.getElementsByName("name_qty")[0].textContent = incCnt;
+   //
+   // var incSP = parseInt(getEntryFromTable.getElementsByClassName("sp")[0].textContent)
 
-   var incSP = parseInt(getEntryFromTable.getElementsByClassName("sp")[0].textContent)
+   __updateInventory();
 }
 
 function clear_Barcode(event)
@@ -408,9 +303,6 @@ function makeEntryInTable()
 
    }
 }
-
-
-
 
 
 

@@ -150,6 +150,24 @@ db.run('CREATE TABLE IF NOT EXISTS inventory(id INTEGER PRIMARY KEY AUTOINCREMEN
 
                                              })
 
+db.run('CREATE TABLE IF NOT EXISTS sales(id INTEGER PRIMARY KEY AUTOINCREMENT, \
+                                             date TEXT NOT NULL, \
+                                             barCode INTEGER NOT NULL, \
+                                             description TEXT NOT NULL, \
+                                             landingPrice INTEGER NOT NULL, \
+                                             sellingPrice INTEGER NOT NULL, \
+                                             quantity INTEGER NOT NULL, \
+                                             partyName TEXT NOT NULL);',
+                                             function(err)
+                                             {
+                                                if(err)
+                                                {
+                                                   console.log(err);
+                                                }
+                                                console.log("Table created");
+
+                                             })
+
 
 function insert_inDB()
 {
@@ -225,4 +243,104 @@ function test_Btn()
    document.getElementById("item_desc").value = "Shirt";
 
    price_calulator();
+}
+
+
+function getEntryFromDB(sale_list_Entry)
+{
+   //console.log(sale_list);
+   return new Promise ((resolve, reject) =>
+   {
+      db.all('SELECT * FROM inventory WHERE barCode = ? ',[sale_list_Entry.barCode], (err, data) =>
+      {
+         if(err)
+            console.log(err);
+         else
+         {
+            console.log(data);
+            resolve(data);
+         }
+      });
+   })
+}
+
+
+function updateInvtinDB(data)
+{
+   var qty = data[0].quantity - 1;
+   var barcode = data[0].barCode;
+   console.log("Qty and Barcode is ", qty, "and ", barcode);
+
+   return new Promise ((resolve, reject) =>
+   {
+      db.run('UPDATE inventory SET quantity = ? WHERE barCode = ?', [qty, barcode],
+      function (err)
+      {
+         if(err)
+            reject(err);
+         else
+            resolve();
+      })
+   })
+}
+
+
+function updateSaleinDB(sale_list_Entry)
+{
+   console.log("In updateSaleinDB ", sale_list_Entry);
+   db.run('INSERT into sales(barCode , \
+                                 date, \
+                                 description, \
+                                 landingPrice, \
+                                 sellingPrice, \
+                                 quantity, \
+                                 partyName) \
+                                 values (?, ?, ?, ?, ?, ?, ?)',
+                                 [sale_list_Entry.barCode,
+                                  sale_list_Entry.date,
+                                  sale_list_Entry.description,
+                                  sale_list_Entry.landingPrice,
+                                  sale_list_Entry.sellingPrice,
+                                  sale_list_Entry.qty,
+                                  sale_list_Entry.partyName],
+                                  function(err)
+   {
+      if(err)
+      {
+         alert("Failed to update the database");
+         console.log(err);
+      }
+   })
+}
+
+function priceCalculator_UpdateDB(sale_list)
+{
+   for(var idx = 0; idx < sale_list.length; idx++)
+   {
+      sale_list_Entry = sale_list[idx];
+
+      console.log("In priceCalculator_UpdateDB ",sale_list_Entry);
+      getEntryFromDB(sale_list_Entry).then(data =>
+      {
+         updateInvtinDB(data).then (()=>
+         {
+            console.log(data);
+            sale_list_Entry.description = data[0].description;
+            sale_list_Entry.barCode = data[0].barCode;
+            sale_list_Entry.sellingPrice = data[0].sellingPrice;
+            sale_list_Entry.landingPrice = data[0].landingPrice;
+            sale_list_Entry.partyName = data[0].partyName;
+            sale_list_Entry.date = 1234;
+            sale_list_Entry.qty = 1;
+            updateSaleinDB(sale_list_Entry);
+         }) .catch(err =>
+         {
+            console.log(err);
+         });
+
+      }) .catch(err =>
+      {
+         console.log(err);
+      })
+   }
 }
