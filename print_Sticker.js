@@ -7,6 +7,7 @@ var landingPrice = document.getElementsByClassName("landing_Price");
 var art_no =  document.getElementsByClassName("art_no");
 var mrp_p = document.getElementsByClassName("mrp_p");
 
+
 function clearClassVal()
 {
    var idx = 0;
@@ -24,7 +25,7 @@ function clearClassVal()
 
 // JsBarcode("#barcode", "TestCode");
 
-ipcRenderer.on("printLabel", (content,data) =>
+ipcRenderer.on("fillLabelinfo", (content,data) =>
 {
    var idx = 0;
 
@@ -56,11 +57,44 @@ ipcRenderer.on("printLabel", (content,data) =>
      margin: 0
    });
    console.log(data);
+
+   ipcRenderer.send("printLabel");
+   // printWindow.webContents.print(printOptions, (success, failureReason) => {
+   //    if (!success)
+   //       console.log(failureReason);
+   // });
 });
 
 
 function print_StickerFn(item_Details, next_barCode)
 {
    item_Details.barCode = next_barCode;
-   ipcRenderer.send("printLabel", item_Details);
+   ipcRenderer.send("fillLabelinfo", item_Details);
 }
+
+
+
+
+
+
+
+
+// const electron = require('electron')
+// // Importing BrowserWindow from Main
+// const BrowserWindow = electron.remote.BrowserWindow;
+//
+// var current = document.getElementById('current');
+//
+//
+// current.addEventListener('click', (event) => {
+//     let win = BrowserWindow.getFocusedWindow();
+//     // let win = BrowserWindow.getAllWindows()[0];
+//
+//     win.webContents.print(options, (success, failureReason) => {
+//         if (!success) console.log(failureReason);
+//
+//         console.log('Print Initiated');
+//         console.log(options);
+//         //console.log(win);
+//     });
+// });

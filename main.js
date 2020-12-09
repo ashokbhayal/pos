@@ -5,6 +5,23 @@ const {app, BrowserWindow, Menu, ipcMain, shell} = require("electron");
 // const fs = require("fs");
 // const path = require("path");
 
+var printOptions = {
+    preview: true,
+    silent: true,
+    printBackground: false,
+    //deviceName: 'Canon LBP2900',
+    deviceName: 'TSC TTP-244 Pro',
+   //  pageSize: {
+   //    height: 140000,
+   //    width: 70000
+   // },
+    color: false,
+    pagesPerSheet: 1,
+    collate: false,
+    copies: 1,
+}
+
+
 let mainWindow = undefined;
 let workerWindow = undefined;
 
@@ -17,7 +34,7 @@ function createWindow () {
       nodeIntegration: true
     }
   })
-  mainWindow.loadFile("./index.html");
+  mainWindow.loadFile("./sales.html");
   mainWindow.webContents.openDevTools();
   mainWindow.on("closed", () => {
       // close worker windows later
@@ -33,7 +50,7 @@ function createWindow () {
     }
   })
   printWindow.loadFile("./printWindow_Temp.html");
-  // workerWindow.hide();
+  printWindow.hide();
   printWindow.webContents.openDevTools();
   printWindow.on("closed", () => {
       printWindow = undefined;
@@ -41,26 +58,18 @@ function createWindow () {
 }
 
 // retransmit it to workerWindow
-ipcMain.on("printLabel", (event, data) => {
+ipcMain.on("fillLabelinfo", (event, data) => {
     console.log(event, data);
-    printWindow.webContents.send("printLabel", data);
+    printWindow.webContents.send("fillLabelinfo", data);
 });
+
 // when worker window is ready
-// ipcMain.on("readyToPrintPDF", (event) => {
-//     const pdfPath = path.join(os.tmpdir(), 'print.pdf');
-//     // Use default printing options
-//     workerWindow.webContents.printToPDF({}).then((data) {
-//         fs.writeFile(pdfPath, data, function (error) {
-//             if (error) {
-//                 throw error
-//             }
-//             shell.openItem(pdfPath)
-//             event.sender.send('wrote-pdf', pdfPath)
-//         })
-//     }).catch((error) => {
-//        throw error;
-//     })
-// });
+ipcMain.on("printLabel", (event) => {
+    printWindow.webContents.print(printOptions, (success, failureReason) => {
+      if (!success)
+         console.log(failureReason);
+    });
+});
 
 
 app.whenReady().then(createWindow)

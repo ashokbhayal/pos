@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "electron-pos-printer": "^1.2.4",
+    "jquery": "^3.5.1",
     "jsbarcode": "^3.11.3",
     "pdf-to-printer": "^1.5.2",
     "sqlite3": "^5.0.0",

@@ -1,6 +1,6 @@
 body
 {
-   width: 4in;
+   width: 5in;
    margin: 0;
    margin-left: 20px;
    margin-right: 20px;
@@ -9,7 +9,7 @@ body
 .label_Div
 {
    font-family: Arial;
-   width: 1.8in;
+   width: 2.3in;
    text-align: center;
    float:left;
    margin-top: 0px;
@@ -54,7 +54,7 @@ p
 {
    float: right;
    margin: 0;
-   width: 0.8in;
+   width: 1in;
 }
 
 #left_Label
