@@ -24,22 +24,56 @@ window.addEventListener('load',function(){
    table.addEventListener('click',handleDelete)
 })
 
+function reset_total()
+{
+   subTotal = 0;
+   discount = 0;
+   grandTotal = 0;
+}
+
+
+function reset_idx()
+{
+   for(idx1 = 0; idx1 < sale_list.length; idx1++)
+   {
+      sale_list[idx1].index = idx1;
+   }
+}
+
+
 function handleDelete(){
    const {classList, name} = event.target
    // console.log(classList)
    if( !classList.value.includes("row-delete") ){
       return
    }
-   let barCode = Number(name)
-   console.log('barcode',barCode)
-}
 
+   let removeVal = Number(name);
+   console.log(removeVal);
+   // removeElement(sale_list, removeVal);
+   console.log(sale_list);
+   sale_list = sale_list.filter((item) => item.index !== removeVal)
+   var row = document.getElementById(removeVal);
+   row.parentNode.removeChild(row);
+
+   reset_total();
+   reset_idx();
+
+   for(idx1 = 0; idx1 < sale_list.length; idx1++)
+   {
+      calculateSubTotal(idx1);
+   }
+}
 
 function add_subTotal(sel)
 {
    console.log(sale_list);
 
+
+   // Start here: Discount yes or no NOT WORKING
    var idx = sel.options[sel.selectedIndex].value;
+   // idx -= 1;
+   console.log(idx);
    if(sel.options[sel.selectedIndex].text == "Yes")
    {
       sale_list[idx].discount = 1;
@@ -51,17 +85,14 @@ function add_subTotal(sel)
       console.log("No Discount");
    }
 
-   subTotal = 0;
-   discount = 0;
-   grandTotal = 0;
+   reset_total();
 
-   for(idx1 = 0; idx1 < sale_list.length; idx1++)
+   for(idx2 = 0; idx2 < sale_list.length; idx2++)
    {
-      calculateSubTotal(idx1);
+      calculateSubTotal(idx2);
    }
    //console.log(sel.options[sel.selectedIndex].text);
    //console.log(sel.options[sel.selectedIndex].value);
-
 }
 
 function calculateSubTotal(idx)
@@ -124,17 +155,19 @@ function enter_Content(event)
                 table.deleteRow(i);
             }
 
+            reset_total();
+
             const getEntryFromTable = document.getElementById(barCode);
             if(getEntryFromTable == null)
             {
+               console.log("Make new entry");
                makeEntryInTable();
             }
-            else {
+            else
+            {
+               console.log("Update the entry");
                updateEntryInTable();
             }
-
-            subTotal = 0;
-            discount = 0;
 
             clear_Barcode(event);
          }
@@ -234,6 +267,8 @@ function makeEntryInTable()
    {
       const { description, id, sellingPrice, barCode } = sale_list[idx];
 
+      sale_list[idx].index = idx;
+
       var row = document.createElement('tr') ;
 
       //* use a create table row function,
@@ -256,16 +291,15 @@ function makeEntryInTable()
       const optionNo = document.createElement("option")
 
       optionYes.text = "Yes";
-      optionYes.value = idx; //(sellingPrice-(sellingPrice * 0.1));
+      optionYes.value = idx;
 
       optionNo.text = "No";
       optionNo.value = idx;
 
       sale_list[idx].discount = 1;
       console.log(sale_list);
-      //console.log(optionYes, optionNo);
 
-      row.setAttribute("id", barCode);
+      row.setAttribute("id", idx);
 
       // Discount Yes or No
       dropDownSel.setAttribute("class", "mdb-select md-form")
@@ -283,7 +317,7 @@ function makeEntryInTable()
 
       // Delete Button
       delButton.setAttribute("class","btn btn-primary row-delete")
-      delButton.name = barCode
+      delButton.name = idx;
       delButton.textContent = "DELETE"
       delContainer.appendChild(delButton)
       delContainer.style.textAlign = "center"
