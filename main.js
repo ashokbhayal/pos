@@ -34,7 +34,7 @@ function createWindow () {
       nodeIntegration: true
     }
   })
-  mainWindow.loadFile("./print_Sticker.html");
+  mainWindow.loadFile("./sales.html");
   mainWindow.webContents.openDevTools();
   mainWindow.on("closed", () => {
       // close worker windows later
