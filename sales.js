@@ -34,6 +34,19 @@ function reset_total()
 
 function reset_idx()
 {
+   var tableRef = document.getElementById('sales_table');
+   var tableLen = tableRef.rows.length;
+   console.log(tableRef);
+
+   for(var i = 1; i < tableLen; i++)
+   {
+      console.log(tableRef.rows[i]);
+      console.log(tableRef.rows[i].getElementsByTagName("option"));
+      tableRef.rows[i].id = (i-1);
+      for(var j = 0; j <tableRef.rows[i].getElementsByTagName("option").length; j++)
+      tableRef.rows[i].getElementsByTagName("option")[j].value = (i-1);
+   }
+
    for(idx1 = 0; idx1 < sale_list.length; idx1++)
    {
       sale_list[idx1].index = idx1;
@@ -72,7 +85,6 @@ function add_subTotal(sel)
 
    // Start here: Discount yes or no NOT WORKING
    var idx = sel.options[sel.selectedIndex].value;
-   // idx -= 1;
    console.log(idx);
    if(sel.options[sel.selectedIndex].text == "Yes")
    {
