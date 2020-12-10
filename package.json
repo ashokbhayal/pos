@@ -20,6 +20,7 @@
   "homepage": "https://github.com/ashokbhayal/pos#readme",
   "devDependencies": {
     "electron": "^10.1.4",
+    "electron-packager": "^15.2.0",
     "electron-rebuild": "^2.3.2"
   },
   "dependencies": {
