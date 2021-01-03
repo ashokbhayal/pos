@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
+// const db = require('better-sqlite3')('inventory.db', options);
 
 var print_StickerFn = require('./print_Sticker');
 

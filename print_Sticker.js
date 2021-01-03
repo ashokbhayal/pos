@@ -71,30 +71,3 @@ function print_StickerFn(item_Details, next_barCode)
    item_Details.barCode = next_barCode;
    ipcRenderer.send("fillLabelinfo", item_Details);
 }
-
-
-
-
-
-
-
-
-// const electron = require('electron')
-// // Importing BrowserWindow from Main
-// const BrowserWindow = electron.remote.BrowserWindow;
-//
-// var current = document.getElementById('current');
-//
-//
-// current.addEventListener('click', (event) => {
-//     let win = BrowserWindow.getFocusedWindow();
-//     // let win = BrowserWindow.getAllWindows()[0];
-//
-//     win.webContents.print(options, (success, failureReason) => {
-//         if (!success) console.log(failureReason);
-//
-//         console.log('Print Initiated');
-//         console.log(options);
-//         //console.log(win);
-//     });
-// });

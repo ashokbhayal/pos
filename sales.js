@@ -1,4 +1,5 @@
-//const sqlite3 = require('sqlite3').verbose();
+// const sqlite3 = require('sqlite3').verbose();
+// const db = require('better-sqlite3')
 // const $ = require('jquery');
 
 var enteredBarCode = "";
@@ -172,11 +173,13 @@ function enter_Content(event)
             const getEntryFromTable = document.getElementById(barCode);
             if(getEntryFromTable == null)
             {
+               // Make entry in the table (add a row)
                console.log("Make new entry");
                makeEntryInTable();
             }
             else
             {
+               // TODO: Not working, need to update qty in table
                console.log("Update the entry");
                updateEntryInTable();
             }
@@ -184,7 +187,10 @@ function enter_Content(event)
             clear_Barcode(event);
          }
          else
+         {
+            console.log("Empty data");
             clear_Barcode(event);
+         }
 
       }) .catch(err => {
          clear_Barcode(event);

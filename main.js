@@ -24,6 +24,7 @@ var printOptions = {
 
 let mainWindow = undefined;
 let workerWindow = undefined;
+app.allowRendererProcessReuse = false;
 
 function createWindow () {
 
