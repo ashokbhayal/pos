@@ -1,5 +1,4 @@
 const sqlite3 = require('sqlite3').verbose();
-// const db = require('better-sqlite3')('inventory.db', options);
 
 var print_StickerFn = require('./print_Sticker');
 
@@ -18,6 +17,8 @@ var lastEntryFlg = false;
 
 var date = new Date;
 
+
+// Calculate the price and initate print
 function price_calulator()
 {
    var price;
@@ -133,6 +134,8 @@ let db = new sqlite3.Database('./inventory.db', (err) => {
   console.log('Connected to the in-memory SQlite database.');
 });
 
+
+// Create DB if not found
 db.run('CREATE TABLE IF NOT EXISTS inventory(id INTEGER PRIMARY KEY AUTOINCREMENT, \
                                              date TEXT NOT NULL, \
                                              barCode INTEGER NOT NULL, \
@@ -170,6 +173,7 @@ db.run('CREATE TABLE IF NOT EXISTS sales(id INTEGER PRIMARY KEY AUTOINCREMENT, \
                                              })
 
 
+// Insert new entry at the end of the barcode
 function insert_inDB()
 {
    db.run('INSERT into inventory(barCode , \
@@ -208,6 +212,8 @@ function insert_inDB()
    // })
 }
 
+
+// Get the last entry to append new item inventory
 function getLastEntry()
 {
    return new Promise ((resolve, reject) =>
@@ -247,6 +253,7 @@ function test_Btn()
 }
 
 
+// Receive the entry from DB
 function getEntryFromDB(sale_list_Entry)
 {
    //console.log(sale_list);
@@ -266,6 +273,7 @@ function getEntryFromDB(sale_list_Entry)
 }
 
 
+// Reduce the qty in inventory DB
 function updateInvtinDB(data)
 {
    var qty = data[0].quantity - 1;
@@ -286,6 +294,7 @@ function updateInvtinDB(data)
 }
 
 
+// Add sale in sale DB
 function updateSaleinDB(sale_list_Entry)
 {
    console.log("In updateSaleinDB ", sale_list_Entry);
@@ -314,6 +323,7 @@ function updateSaleinDB(sale_list_Entry)
    })
 }
 
+// Function called from sales.js to update DB
 function priceCalculator_UpdateDB(sale_list)
 {
    for(var idx = 0; idx < sale_list.length; idx++)

@@ -23,7 +23,7 @@ var printOptions = {
 
 
 let mainWindow = undefined;
-let workerWindow = undefined;
+let printWindow = undefined;
 app.allowRendererProcessReuse = false;
 
 function createWindow () {
@@ -38,8 +38,10 @@ function createWindow () {
   mainWindow.loadFile("./sales.html");
   mainWindow.webContents.openDevTools();
   mainWindow.on("closed", () => {
+
       // close worker windows later
       mainWindow = undefined;
+      printWindow.close();
   });
 
   //Print window
@@ -58,7 +60,7 @@ function createWindow () {
   });
 }
 
-// retransmit it to workerWindow
+// retransmit it to printWindow
 ipcMain.on("fillLabelinfo", (event, data) => {
     console.log(event, data);
     printWindow.webContents.send("fillLabelinfo", data);
