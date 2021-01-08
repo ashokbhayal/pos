@@ -1,6 +1,8 @@
 // const sqlite3 = require('sqlite3').verbose();
 // const db = require('better-sqlite3')
 // const $ = require('jquery');
+// var sales_print_tableAppend = require('./salesPrint');
+const ipcRenderer = require("electron").ipcRenderer;
 
 var enteredBarCode = "";
 var itemData = {};
@@ -20,10 +22,10 @@ var grandTotal = 0;
 
 var subtotal_ValID = document.getElementById("subtotal_th_val");
 
-window.addEventListener('load',function(){
-   const table = document.getElementById('sales_table');
-   table.addEventListener('click',handleDelete)
-})
+// window.addEventListener('load',function(){
+//    const table = document.getElementById('sales_table');
+//    table.addEventListener('click',handleDelete)
+// })
 
 function reset_total()
 {
@@ -110,6 +112,9 @@ function add_subTotal(sel)
 
 function calculateSubTotal(idx)
 {
+
+   var total_t = {};
+
    subTotal += sale_list[idx].sellingPrice;
    console.log("subTotal is ", subTotal);
 
@@ -121,9 +126,16 @@ function calculateSubTotal(idx)
 
    grandTotal = subTotal - discount;
 
+   total_t.subTotal = subTotal;
+   total_t.discount = discount;
+   total_t.grandTotal = grandTotal;
+
    document.getElementById("subtotal_th_val").textContent = subTotal;
    document.getElementById("discount_td_val").textContent = discount;
    document.getElementById("total_th_val").textContent = grandTotal;
+
+   ipcRenderer.send("fill_Estimate_Total", total_t);
+
 }
 
 function enter_Content(event)
@@ -236,6 +248,7 @@ function sales_print()
    // var incSP = parseInt(getEntryFromTable.getElementsByClassName("sp")[0].textContent)
 
    __updateInventory();
+   ipcRenderer.send("fill_Estimate_Print", sale_list);
 }
 
 function clear_Barcode(event)

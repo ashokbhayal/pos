@@ -59,7 +59,7 @@ ipcRenderer.on("fillLabelinfo", (content,data) =>
    console.log(data);
 
    ipcRenderer.send("printLabel");
-   // printWindow.webContents.print(printOptions, (success, failureReason) => {
+   // printWindow.webContents.print(Inventory_printOptions, (success, failureReason) => {
    //    if (!success)
    //       console.log(failureReason);
    // });
