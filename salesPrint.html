@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <link rel="stylesheet" href="./css/pos_css/sales_print.css"/>
+</head>
+<body>
+   <div class= "label_Div" id= "left_Label">
+      <h2 class= shopName>AAIJI GARMENT</h2>
+      <p> Gandhi Circle, Anekal - 562106</p>
+      <p id="estimate_no">Estimate</p>
+      <p id="data_p">Date: </p>
+   </div>
+   <hr>
+   <div class="row col-md-12 table-wrapper-scroll-y my-custom-scrollbar">
+      <table class = "table table-hover table-striped" id = "sales_PrintTable">
+         <tr>
+            <th id = "desc">Desc</th>
+            <th id="qty">Qty</th>
+            <!-- <th id="rate">Rate</th> -->
+            <th id="amount">Amount</th>
+         </tr>
+      </table>
+   </div>
+   <hr>
+   <div class="total_row col-md-12">
+      <table id = "total_table">
+         <tr>
+            <th id ="subtotal_th">Sub Total:</th>
+            <th id="subtotal_th_val" style="text-align:right"></th>
+         </tr>
+         <tr>
+            <td id="discount_td">Discount:</td>
+            <td id="discount_td_val" style="text-align:right"></td>
+         </tr>
+         <tr>
+            <th id="total_th">Total:</th>
+            <th id="total_th_val"style="text-align:right"></th>
+         </tr>
+      </table>
+   </div>
+   <hr>
+   <div>
+      <p id = "discount_Note" style="white-space:pre"></p>
+      <p id = 'thankYouNote'>Thank you visit again !!!</p>
+   </div>
+   <br />
+
+   <div>
+     <script type="text/javascript" src="./salesPrint.js"></script>
+   </div>
+
+</body>
+</html>
