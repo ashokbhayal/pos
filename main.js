@@ -112,12 +112,13 @@ ipcMain.on("fill_Estimate_Print", (event, data) => {
     salesPrintWindow.webContents.send("fill_Estimate_Print", data);
 })
 
+
 // Print Estimate window is ready
 ipcMain.on("printEstimate", (event) => {
-    // salesPrintWindow.webContents.print(sales_printOptions, (success, failureReason) => {
-    //   if (!success)
-    //      console.log(failureReason);
-    // });
+    salesPrintWindow.webContents.print(sales_printOptions, (success, failureReason) => {
+      if (!success)
+         console.log(failureReason);
+    });
 });
 
 

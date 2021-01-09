@@ -70,10 +70,6 @@ ipcRenderer.on("add_Estimate_Total", (content,data) =>
    document.getElementById("subtotal_th_val").textContent = data.subTotal;
    document.getElementById("discount_td_val").textContent = data.discount;
    document.getElementById("total_th_val").textContent = data.grandTotal;
-
-   document.getElementById("discount_Note").innerText = "You saved Rs: ";
-   document.getElementById("discount_Note").innerText +=  data.discount;
-
 })
 
 

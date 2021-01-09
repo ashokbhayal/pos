@@ -14,11 +14,30 @@ h2, p{
    text-align: center;
    margin-bottom: 5px;
    margin-top: 5px;
+
+}
+
+img{
+  width: 60px;
+  display: inline-block;
+  vertical-align: middle;
+/* scale: 50%; */
+}
+
+.shopName{
+   display: inline-block;
+   vertical-align: middle;
+}
+
+#header{
+   text-align: center;
+   vertical-align: middle;
 }
 
 body{
    margin: 5px;
    width: 2.75in;
+   text-align:center;
 }
 
 #estimate_no{
