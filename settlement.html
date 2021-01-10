@@ -5,8 +5,7 @@
    <title>AAIJI GARMENT POS</title>
    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
    <link rel="stylesheet" href="./css/bootstrap.min.css" />
-   <link rel="stylesheet" href="./css/pos_css/pos.css" />
-   <link rel="stylesheet" href="./css/pos_css/sales.css" />
+   <link rel="stylesheet" href="./css/pos_css/settlement.css" />
 </head>
 <body>
    <div class="col-md-12">
@@ -17,10 +16,10 @@
                <a class="nav-link" href="./index.html">Add Inventory</a>
             </li>
             <li class="nav-item">
-               <a class="nav-link active" href="./sales.html">Sales</a>
+               <a class="nav-link" href="./sales.html">Sales</a>
             </li>
             <li class="nav-item">
-               <a class="nav-link" href="./settlement.html">Settlement</a>
+               <a class="nav-link active" href="./settlement.html">Settlement</a>
             </li>
             <li class="nav-item">
                <a class="nav-link" href="#" onclick="window.open('', '_self', ''); window.close();">Exit</a>
@@ -32,17 +31,10 @@
    </header>
    </div>
 
-   <h1>Sales</h1>
+   <h1>Settlement</h1>
 
    </br>
    <div class="row">
-      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-         <h2>Barcode: </h2>
-      </div>
-      <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-         <textarea class="form-control param_textarea" rows="1" id="price_textArea"
-          placeholder="Barcode" onkeydown = enter_Content(event)></textarea>
-      </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
          <button type="button" class="btn btn-outline-primary" onclick="enter_Content_test()">Test Button</button>
       </div>
@@ -53,15 +45,15 @@
          <button type="button" class="btn btn-outline-primary" onclick="removeItem()">Cancel Sale</button>
       </div>
    </div>
-
+   </br>
    <div class="row col-md-12 table-wrapper-scroll-y my-custom-scrollbar">
       <table class = "table table-hover table-striped" id = "sales_table">
          <tr>
-            <th>DESCRIPTION</th>
-            <th id="qty">QUANTITY</th>
-            <th id="amount">AMOUNT</th>
-            <th></th>
-            <th id ="discount_th">Discount</th>
+            <th>Date</th>
+            <th id="landing_Amount">Landing Price</th>
+            <th id="billing_Amount">Billing Amount</th>
+            <th id ="paid_Amount">Paid Amount</th>
+            <th id ="final_Discount">Final Discount</th>
          </tr>
       </table>
    </div>

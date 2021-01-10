@@ -172,6 +172,37 @@ db.run('CREATE TABLE IF NOT EXISTS sales(id INTEGER PRIMARY KEY AUTOINCREMENT, \
 
                                              })
 
+db.run('CREATE TABLE IF NOT EXISTS settlement_pending(id INTEGER PRIMARY KEY AUTOINCREMENT, \
+                                                      date TEXT NOT NULL, \
+                                                      landingPrice INTEGER NOT NULL, \
+                                                      billingAmount INTEGER NOT NULL);',
+                                                      function(err)
+                                                      {
+                                                         if(err)
+                                                         {
+                                                            console.log(err);
+                                                         }
+                                                         console.log("Table created");
+
+                                                      })
+
+db.run('CREATE TABLE IF NOT EXISTS settlement_done(id INTEGER PRIMARY KEY AUTOINCREMENT, \
+                                                      date TEXT NOT NULL, \
+                                                      barCode INTEGER NOT NULL, \
+                                                      description TEXT NOT NULL, \
+                                                      landingPrice INTEGER NOT NULL, \
+                                                      sellingPrice INTEGER NOT NULL, \
+                                                      quantity INTEGER NOT NULL, \
+                                                      partyName TEXT NOT NULL);',
+                                                      function(err)
+                                                      {
+                                                         if(err)
+                                                         {
+                                                            console.log(err);
+                                                         }
+                                                         console.log("Table created");
+
+                                                      })
 
 // Insert new entry at the end of the barcode
 function insert_inDB()

@@ -23,9 +23,11 @@ var grandTotal = 0;
 var subtotal_ValID = document.getElementById("subtotal_th_val");
 
 // window.addEventListener('load',function(){
-//    const table = document.getElementById('sales_table');
-//    table.addEventListener('click',handleDelete)
+
 // })
+
+   const table = document.getElementById('sales_table');
+   table.addEventListener('click',handleDelete)
 
 function reset_total()
 {
