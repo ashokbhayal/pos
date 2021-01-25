@@ -27,6 +27,7 @@
     "electron-pos-printer": "^1.2.4",
     "jquery": "^3.5.1",
     "jsbarcode": "^3.11.3",
+    "jsonfile": "^6.1.0",
     "pdf-to-printer": "^1.5.2",
     "sqlite3": "^5.0.0",
     "wait.for-es6": "^0.1.0"

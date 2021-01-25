@@ -36,63 +36,31 @@
    </br>
    <div class="row">
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-         <button type="button" class="btn btn-outline-primary" onclick="enter_Content_test()">Test Button</button>
+         <button type="button" class="btn btn-outline-primary" onclick="load_Settlement()">Load</button>
       </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-         <button type="button" class="btn btn-outline-primary" onclick="sales_print()">Print</button>
-      </div>
-      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-         <button type="button" class="btn btn-outline-primary" onclick="removeItem()">Cancel Sale</button>
+         <button type="button" class="btn btn-outline-primary" onclick="complete_Settlement()">Settle</button>
       </div>
    </div>
    </br>
    <div class="row col-md-12 table-wrapper-scroll-y my-custom-scrollbar">
-      <table class = "table table-hover table-striped" id = "sales_table">
+      <table class = "table table-hover table-striped" id = "settlement_table">
          <tr>
             <th>Date</th>
+            <th>Time</th>
             <th id="landing_Amount">Landing Price</th>
             <th id="billing_Amount">Billing Amount</th>
             <th id ="paid_Amount">Paid Amount</th>
-            <th id ="final_Discount">Final Discount</th>
+            <th id ="final_Discount">Paid by</th>
          </tr>
       </table>
    </div>
-      <div class="total_row col-md-12 fixed-bottom">
-         <table id = "total_table" style="width:50%">
-            <tr>
-               <th id ="subtotal_th">Sub Total:</th>
-               <th id="subtotal_th_val" style="text-align:right"></th>
-            </tr>
-            <tr>
-               <td id="discount_td">Discount:</td>
-               <td id="discount_td_val" style="text-align:right"></td>
-            </tr>
-            <tr>
-               <th id="total_th">Total:</th>
-               <th id="total_th_val"style="text-align:right"></th>
-            </tr>
-         </table>
-      </div>
 
-   <!-- <div class="row">
-      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-         <h3 id = "sales_sub_total">Sub Total</h3>
-      </div>
-   </div>
-   <div class="row">
-      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-         <h3 id = "sales_discount">Discount</h3>
-      </div>
-   </div>
-   <div class="row">
-      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-         <h2 id = "sales_total">Total</h2>
-      </div>
-   </div> -->
    <div>
       <!-- FIX price_calulator js file -->
-            <script type="text/javascript" src="./price_calulator.js"></script>
-      <script type="text/javascript" src="./sales.js"></script>
+      <script type="text/javascript" src="./price_calulator.js"></script>
+      <!-- <script type="text/javascript" src="./sales.js"></script> -->
+      <script type="text/javascript" src="./settlement.js"></script>
    </div>
 
 </body>

@@ -3,14 +3,26 @@ const ipcRenderer = require("electron").ipcRenderer;
 
 ipcRenderer.on("fill_Estimate_Print", (content,data) =>
 {
+
+   clear_Table();
+
    var datetime = new Date();
 
    var add_Date = document.getElementById("data_p");
+   add_Date.innerHTML = "";
    add_Date.innerHTML += datetime.getDate();
    add_Date.innerHTML += "/";
    add_Date.innerHTML += (datetime.getMonth()+1);
    add_Date.innerHTML += "/";
    add_Date.innerHTML += datetime.getFullYear();
+
+   var add_Time = document.getElementById("time_p");
+   add_Time.innerHTML = "";
+   add_Time.innerHTML += datetime.getHours();
+   add_Time.innerHTML += ":";
+   add_Time.innerHTML += (datetime.getMinutes());
+   add_Time.innerHTML += ":";
+   add_Time.innerHTML += datetime.getSeconds();
 
    console.log("Found this data", data);
    var table = document.getElementById("sales_PrintTable").getElementsByTagName('tbody')[0];
@@ -20,7 +32,7 @@ ipcRenderer.on("fill_Estimate_Print", (content,data) =>
 
    for(idx = 0; idx < sale_list.length; idx ++)
    {
-      const { description, id, sellingPrice, barCode } = sale_list[idx];
+      const { description, id, sellingPrice, barCode, Selling_quantity } = sale_list[idx];
 
       console.log(sale_list[idx]);
 
@@ -35,6 +47,8 @@ ipcRenderer.on("fill_Estimate_Print", (content,data) =>
       const qty = document.createElement("td")
       qty.setAttribute("name", "name_qty");
 
+      const rate = document.createElement("td")
+
       const sp = document.createElement("td")
       sp.setAttribute("name", "sp");
 
@@ -45,14 +59,18 @@ ipcRenderer.on("fill_Estimate_Print", (content,data) =>
       desc.style.textAlign = "left"
 
       // Quantity
-      qty.textContent = 1;
+      qty.textContent = Selling_quantity;
       qty.style.textAlign = "center"
 
+      // Rate
+      rate.textContent = sellingPrice;
+      rate.style.textAlign = "center"
+
       // Selling Price
-      sp.textContent = sellingPrice
+      sp.textContent = (sellingPrice * Selling_quantity);
       sp.style.textAlign = "right"
 
-      row.append( desc, qty, sp)
+      row.append( desc, qty, rate, sp)
       table.append(row)
 
       ipcRenderer.send("printEstimate");
@@ -87,4 +105,29 @@ function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+}
+
+
+function clear_Table()
+{
+   var elmtTable = document.getElementById('sales_PrintTable');
+   var tableRows = elmtTable.getElementsByTagName('tr');
+   var rowCount = tableRows.length;
+
+   console.log("ElmtTable is ", elmtTable);
+   console.log("table rows ", tableRows);
+   console.log("Rowcount is ", rowCount);
+
+   if(rowCount > 1)
+   {
+      for (var x = rowCount - 1; x > 0; x--)
+      {
+         console.log("Deleting row");
+         // elmtTable.parentNode.removeChild(tableRows[x]);
+
+         elmtTable.deleteRow(x);
+      }
+   }
+
+
 }

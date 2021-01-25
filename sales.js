@@ -2,14 +2,18 @@
 // const db = require('better-sqlite3')
 // const $ = require('jquery');
 // var sales_print_tableAppend = require('./salesPrint');
+// const jsonfile = require('jsonfile');
+const fs = require('fs');
 const ipcRenderer = require("electron").ipcRenderer;
 
 var enteredBarCode = "";
-var itemData = {};
 var sale_list = [];
 var subTotal = 0;
 var discount = 0;
 var grandTotal = 0;
+var total_t = {};
+var test_Var = 0;
+const unsettled_file = './unsettled.json';
 
 // get data from db
 // store into global array`
@@ -26,8 +30,8 @@ var subtotal_ValID = document.getElementById("subtotal_th_val");
 
 // })
 
-   const table = document.getElementById('sales_table');
-   table.addEventListener('click',handleDelete)
+const table_addDelHandler = document.getElementById('sales_table');
+table_addDelHandler.addEventListener('click',handleDelete)
 
 function reset_total()
 {
@@ -39,56 +43,45 @@ function reset_total()
 
 function reset_idx()
 {
-   var tableRef = document.getElementById('sales_table');
-   var tableLen = tableRef.rows.length;
-   console.log(tableRef);
-
-   for(var i = 1; i < tableLen; i++)
-   {
-      console.log(tableRef.rows[i]);
-      console.log(tableRef.rows[i].getElementsByTagName("option"));
-      tableRef.rows[i].id = (i-1);
-      for(var j = 0; j <tableRef.rows[i].getElementsByTagName("option").length; j++)
-      tableRef.rows[i].getElementsByTagName("option")[j].value = (i-1);
-   }
-
    for(idx1 = 0; idx1 < sale_list.length; idx1++)
    {
       sale_list[idx1].index = idx1;
    }
 }
 
-
+// Handle when an item is deleted from the list
 function handleDelete(){
    const {classList, name} = event.target
-   // console.log(classList)
    if( !classList.value.includes("row-delete") ){
       return
    }
 
    let removeVal = Number(name);
-   console.log(removeVal);
-   // removeElement(sale_list, removeVal);
-   console.log(sale_list);
-   sale_list = sale_list.filter((item) => item.index !== removeVal)
-   var row = document.getElementById(removeVal);
-   row.parentNode.removeChild(row);
 
-   reset_total();
-   reset_idx();
-
-   for(idx1 = 0; idx1 < sale_list.length; idx1++)
+   // Reduce the quantity
+   sale_list.forEach((item) =>
    {
-      calculateSubTotal(idx1);
-   }
+      if(item.index == removeVal)
+      {
+         if(item.Selling_quantity > 1)
+            item.Selling_quantity--;
+         else
+            sale_list = sale_list.filter((item) => item.index !== removeVal)
+      }
+   });
+
+   // reset_total();
+   reset_idx();
+   clear_Table(table_addDelHandler);
+   makeEntryInTable();
+   calculateSubTotal();
 }
 
+
+// This function is  called when there is change in discount drop down
 function add_subTotal(sel)
 {
-   console.log(sale_list);
 
-
-   // Start here: Discount yes or no NOT WORKING
    var idx = sel.options[sel.selectedIndex].value;
    console.log(idx);
    if(sel.options[sel.selectedIndex].text == "Yes")
@@ -102,28 +95,24 @@ function add_subTotal(sel)
       console.log("No Discount");
    }
 
-   reset_total();
-
-   for(idx2 = 0; idx2 < sale_list.length; idx2++)
-   {
-      calculateSubTotal(idx2);
-   }
-   //console.log(sel.options[sel.selectedIndex].text);
-   //console.log(sel.options[sel.selectedIndex].value);
+   calculateSubTotal();
 }
 
-function calculateSubTotal(idx)
+function calculateSubTotal()
 {
+   // Reset the total before calculating the full value
+   reset_total();
 
-   var total_t = {};
-
-   subTotal += sale_list[idx].sellingPrice;
-   console.log("subTotal is ", subTotal);
-
-   if(sale_list[idx].discount == 1)
+   for (idx = 0; idx < sale_list.length; idx++)
    {
-      discount += (sale_list[idx].sellingPrice * 0.1);
-      console.log("Discount ", discount, "and ", sale_list[idx].sellingPrice * 0.1);
+      subTotal += (sale_list[idx].sellingPrice * sale_list[idx].Selling_quantity);
+      console.log("subTotal is ", subTotal);
+
+      if(sale_list[idx].discount == 1)
+      {
+         discount += (sale_list[idx].sellingPrice * 0.1 * sale_list[idx].Selling_quantity);
+         console.log("Discount ", discount, "and ", sale_list[idx].sellingPrice * 0.1);
+      }
    }
 
    grandTotal = subTotal - discount;
@@ -147,7 +136,6 @@ function enter_Content(event)
    {
       if(event.keyCode == 8)
       {
-         console.log("Entered backspace");
          enteredBarCode = enteredBarCode.slice(0, -1);
          break;
       }
@@ -162,49 +150,68 @@ function enter_Content(event)
    {
       var table = document.getElementById("sales_table").getElementsByTagName('tbody')[0];
 
-      // var tableRef = document.getElementById('myTable').getElementsByTagName('tbody')[0];
-
       enteredBarCode = parseInt(enteredBarCode);
 
       getItemfromDB(enteredBarCode).then(data =>
       {
          if(data.length != 0)
          {
-            //const { description, id, sellingPrice, barCode } = data[0];
+            var entry_Found = true;
 
-            const { description, id, sellingPrice, barCode } = data[0];
-            data[0] = { description, id, sellingPrice, barCode };
-            sale_list.push(data[0]);
+            var sellingItemDetails = data[0];
+            sellingItemDetails.Selling_quantity = 1;
 
-            var rowCount = table.rows.length;
-            for (var i = rowCount - 1; i > 0; i--)
+            // Check for same entry
+            if(sale_list.length != 0)
             {
-                table.deleteRow(i);
-            }
-
-            reset_total();
-
-            const getEntryFromTable = document.getElementById(barCode);
-            if(getEntryFromTable == null)
-            {
-               // Make entry in the table (add a row)
-               console.log("Make new entry");
-               makeEntryInTable();
+               for(idx = 0; idx < sale_list.length; idx++)
+               {
+                  console.log(sellingItemDetails.barCode);
+                  if(sale_list[idx].barCode == sellingItemDetails.barCode)
+                  {
+                     // Entry found and increase the quantity
+                     sale_list[idx].Selling_quantity++;
+                     entry_Found = true;
+                     break;
+                  }
+                  else
+                     entry_Found = false;
+               }
             }
             else
-            {
-               // TODO: Not working, need to update qty in table
-               console.log("Update the entry");
-               updateEntryInTable();
-            }
+               sale_list.push(sellingItemDetails);
 
-            clear_Barcode(event);
+            // Enter new item if not found
+            if(entry_Found == false)
+            {
+               sale_list.push(sellingItemDetails);
+            }
+            console.log(sale_list);
+
+            // 1) Clear and Re-Enter the components of the table from first
+            // 2) Increase qty if same qty found
+            // 3) Reset Total
+            // 4) Calcualte Total
+            // 5) Settle
+            clear_Table(table).then(function()
+            {
+               //Table is not present, no point in searching using id on page
+               var  tempVal = 'B';
+               tempVal += sellingItemDetails.barCode;
+               tempVal = String(tempVal);
+
+               makeEntryInTable();
+               calculateSubTotal();
+             }
+           );
          }
          else
          {
-            console.log("Empty data");
-            clear_Barcode(event);
+            alert("Entry Not Found");
          }
+
+         // Clear the barcode textara once entry is done
+         clear_Barcode(event);
 
       }) .catch(err => {
          clear_Barcode(event);
@@ -234,22 +241,62 @@ function getItemfromDB(enteredBarCode)
 }
 
 
-function __updateInventory()
+function __updateUndoneSettlement()
 {
-   console.log("In sales file ", sale_list);
-   priceCalculator_UpdateDB(sale_list);
+   var total_landingPrice = 0;
+
+   var dateStr = date.getDate().toString(10);
+   dateStr = dateStr.concat(" ");
+   dateStr = dateStr.concat(date.toLocaleString('default', {month: 'short'}));
+   dateStr = dateStr.concat(" ");
+   dateStr = dateStr.concat(date.getFullYear().toString(10));
+   // console.log(date.toLocaleString('default', {month: 'short'}));
+
+   var time_Str = date.getHours().toString(10);
+   time_Str = time_Str.concat(":");
+   time_Str = time_Str.concat(date.getMinutes().toString(10));
+   time_Str = time_Str.concat(":");
+   time_Str = time_Str.concat(date.getSeconds().toString(10));
+   console.log("Time is ", time_Str);
+
+   for(item of sale_list)
+   {
+      total_landingPrice += item.landingPrice;
+   }
+
+   var total_sellingPrice = grandTotal;
+   var salesTable_Str = JSON.stringify(sale_list);
+
+   db.run('INSERT into settlement_pending(date, \
+                                          time, \
+                                          description, \
+                                          landingPrice, \
+                                          billingAmount) \
+                                          values (?, ?, ?, ?, ?)',
+                                          [dateStr,
+                                           time_Str,
+                                           salesTable_Str,
+                                           total_landingPrice,
+                                           total_sellingPrice],
+                                           function(err)
+   {
+      if(err)
+      {
+         alert("Failed to update the database");
+         console.log(err);
+      }
+      else {
+         total_landingPrice = 0;
+      }
+   })
+
+   //priceCalculator_UpdateDB(sale_list);
 }
 
 function sales_print()
 {
-   // console.log(getEntryFromTable.getElementsByName("name_qty"));
-   // var incCnt = parseInt(document.getElementsByName("name_qty")[0].textContent);
-   // incCnt = incCnt + 1;
-   // document.getElementsByName("name_qty")[0].textContent = incCnt;
-   //
-   // var incSP = parseInt(getEntryFromTable.getElementsByClassName("sp")[0].textContent)
-
-   __updateInventory();
+   // Update the settlement
+   __updateUndoneSettlement();
    ipcRenderer.send("fill_Estimate_Print", sale_list);
 }
 
@@ -261,35 +308,41 @@ function clear_Barcode(event)
 }
 
 
-function removeItem() {
-  // Declare variables
-  var input, filter, table, tr, td, i, txtValue;
-  input = 00005050;//document.getElementById("myInput");
-  //filter = input.value.toUpperCase();
-  table = document.getElementById("sales_table");
-  tr = table.getElementsByTagName("tr");
 
-  // Loop through all table rows, and hide those who don't match the search query
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0];
-    console.log(td);
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
-
-
-
-function updateEntryInTable()
+function new_Sale()
 {
+   var table = document.getElementById("sales_table").getElementsByTagName('tbody')[0];
+   sale_list = [];
+   clear_Table(table);
 
 }
+
+
+
+// TODO: Fix the button, table is not clearing properly
+// The table must be sent as object rather than ID
+function clear_Table(table_object)
+{
+   return new Promise(function(resolve, reject)
+   {
+      var getTable = table_object;
+      var rowCount = getTable.rows.length;
+
+      if(rowCount > 1)
+      {
+         for (var i = rowCount - 1; i > 0; i--)
+            getTable.deleteRow(i);
+      }
+      else
+      {
+         console.log("Nothing to clear except header");
+      }
+
+      // Need to send a resolve
+      resolve(1);
+   });
+}
+
 
 
 function makeEntryInTable()
@@ -298,7 +351,7 @@ function makeEntryInTable()
 
    for(idx = 0; idx < sale_list.length; idx ++)
    {
-      const { description, id, sellingPrice, barCode } = sale_list[idx];
+      const { description, id, sellingPrice, barCode, Selling_quantity } = sale_list[idx];
 
       sale_list[idx].index = idx;
 
@@ -332,6 +385,8 @@ function makeEntryInTable()
       sale_list[idx].discount = 1;
       console.log(sale_list);
 
+      //TODO: change ID to barcode
+      // "B"+String(barCode)
       row.setAttribute("id", idx);
 
       // Discount Yes or No
@@ -356,7 +411,7 @@ function makeEntryInTable()
       delContainer.style.textAlign = "center"
 
       // Quantity
-      qty.textContent = 1;
+      qty.textContent = Selling_quantity;
       qty.style.textAlign = "center"
 
       // Selling Price
@@ -365,9 +420,6 @@ function makeEntryInTable()
 
       row.append( desc, qty, sp, delContainer, dropDownContainer)
       table.append(row)
-
-      calculateSubTotal(idx);
-
    }
 }
 

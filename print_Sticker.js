@@ -30,11 +30,6 @@ ipcRenderer.on("fillLabelinfo", (content,data) =>
    var idx = 0;
 
    clearClassVal();
-   //
-   // for(idx; idx < document.getElementsByClassName("shopName").length; idx++)
-   // {
-   //    hdrName[idx].innerHTML = "AAIJI GARMENT";
-   // }
 
    for(idx = 0; idx < document.getElementsByClassName("art_no").length; idx++)
    {
@@ -48,17 +43,17 @@ ipcRenderer.on("fillLabelinfo", (content,data) =>
 
    JsBarcode("#barcode", ("00000000" + data.barCode).slice(-8), {
      format: "CODE128",
-     width: 0.8,
-     height: 20,
+     width: 1.5,
+     height: 30,
      textAlign: "center",
-     fontSize: 10,
+     fontSize: 15,
      font: "Arial",
      displayValue: true,
      margin: 0
    });
    console.log(data);
 
-   ipcRenderer.send("printLabel");
+   ipcRenderer.send("printLabel", data);
    // printWindow.webContents.print(Inventory_printOptions, (success, failureReason) => {
    //    if (!success)
    //       console.log(failureReason);

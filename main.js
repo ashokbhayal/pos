@@ -70,7 +70,7 @@ function createWindow () {
     }
   })
   printWindow.loadFile("./printWindow_Temp.html");
-  printWindow.hide();
+  // printWindow.hide();
   printWindow.webContents.openDevTools();
   printWindow.on("closed", () => {
       printWindow = undefined;
@@ -85,6 +85,7 @@ function createWindow () {
      }
   })
   salesPrintWindow.loadFile("./salesPrint.html");
+  // salesPrintWindow.hide();
   salesPrintWindow.webContents.openDevTools();
   salesPrintWindow.on("closed", () => {
      salesPrintWindow = undefined;
@@ -98,8 +99,16 @@ ipcMain.on("fillLabelinfo", (event, data) => {
     printWindow.webContents.send("fillLabelinfo", data);
 });
 
-// when worker window is ready
-ipcMain.on("printLabel", (event) => {
+// when label print window is ready
+ipcMain.on("printLabel", (event, data) => {
+   // console.log("In printLabel IPC ", data);
+   // if((data.withBox) == 0)
+   //    Inventory_printOptions.copies = Math.ceil((data.qty/2));
+   // else
+   //    Inventory_printOptions.copies = data.qty;
+   //
+   //  console.log("Print Values ", Inventory_printOptions);
+
     printWindow.webContents.print(Inventory_printOptions, (success, failureReason) => {
       if (!success)
          console.log(failureReason);

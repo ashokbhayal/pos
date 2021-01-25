@@ -25,6 +25,7 @@ function price_calulator()
    var landing_Price;
    var selling_Price;
    var qty;
+   var withBox;
    var purchase_date = [];
 
    var idx;
@@ -61,6 +62,7 @@ function price_calulator()
    if((party_Name | description) == null)
       alert("Enter Party Name or Description")
 
+   price *= 1.05;
 
    landing_Price = price * 1.2;
    landing_Price = parseInt(landing_Price);
@@ -80,6 +82,14 @@ function price_calulator()
    }
 
    console.log("Landing cost is " + landing_Price);
+
+   withBox = document.getElementById("withBoxCB");
+   if(withBox.checked == true)
+      item_Details.withBox = 1;
+   else
+      item_Details.withBox = 0
+
+   console.log(item_Details.withBox);
 
    item_Details.date = purchase_date;
    item_Details.description = description;
@@ -143,7 +153,8 @@ db.run('CREATE TABLE IF NOT EXISTS inventory(id INTEGER PRIMARY KEY AUTOINCREMEN
                                              landingPrice INTEGER NOT NULL, \
                                              sellingPrice INTEGER NOT NULL, \
                                              quantity INTEGER NOT NULL, \
-                                             partyName TEXT NOT NULL);',
+                                             partyName TEXT NOT NULL, \
+                                             withBox INTEGET NOT NULL);',
                                              function(err)
                                              {
                                                 if(err)
@@ -156,10 +167,11 @@ db.run('CREATE TABLE IF NOT EXISTS inventory(id INTEGER PRIMARY KEY AUTOINCREMEN
 
 db.run('CREATE TABLE IF NOT EXISTS sales(id INTEGER PRIMARY KEY AUTOINCREMENT, \
                                              date TEXT NOT NULL, \
+                                             time TEXT NOT NULL, \
                                              barCode INTEGER NOT NULL, \
                                              description TEXT NOT NULL, \
-                                             landingPrice INTEGER NOT NULL, \
-                                             sellingPrice INTEGER NOT NULL, \
+                                             landingPriceperPC INTEGER NOT NULL, \
+                                             sellingPriceperPC INTEGER NOT NULL, \
                                              quantity INTEGER NOT NULL, \
                                              partyName TEXT NOT NULL);',
                                              function(err)
@@ -174,6 +186,8 @@ db.run('CREATE TABLE IF NOT EXISTS sales(id INTEGER PRIMARY KEY AUTOINCREMENT, \
 
 db.run('CREATE TABLE IF NOT EXISTS settlement_pending(id INTEGER PRIMARY KEY AUTOINCREMENT, \
                                                       date TEXT NOT NULL, \
+                                                      time TEXT NOT NULL, \
+                                                      description TEXT NOT NULL, \
                                                       landingPrice INTEGER NOT NULL, \
                                                       billingAmount INTEGER NOT NULL);',
                                                       function(err)
@@ -188,12 +202,12 @@ db.run('CREATE TABLE IF NOT EXISTS settlement_pending(id INTEGER PRIMARY KEY AUT
 
 db.run('CREATE TABLE IF NOT EXISTS settlement_done(id INTEGER PRIMARY KEY AUTOINCREMENT, \
                                                       date TEXT NOT NULL, \
-                                                      barCode INTEGER NOT NULL, \
+                                                      time TEXT NOT NULL, \
                                                       description TEXT NOT NULL, \
                                                       landingPrice INTEGER NOT NULL, \
-                                                      sellingPrice INTEGER NOT NULL, \
-                                                      quantity INTEGER NOT NULL, \
-                                                      partyName TEXT NOT NULL);',
+                                                      billingAmount INTEGER NOT NULL, \
+                                                      paidAmount INTEGER NOT NULL , \
+                                                      paidBy TEXT NOT NULL);',
                                                       function(err)
                                                       {
                                                          if(err)
@@ -213,15 +227,17 @@ function insert_inDB()
                                  landingPrice, \
                                  sellingPrice, \
                                  quantity, \
-                                 partyName) \
-                                 values (?, ?, ?, ?, ?, ?, ?)',
+                                 partyName, \
+                                 withBox) \
+                                 values (?, ?, ?, ?, ?, ?, ?, ?)',
                                  [next_barCode,
                                   item_Details.date,
                                   item_Details.description,
                                   item_Details.landingPrice,
                                   item_Details.sellingPrice,
                                   item_Details.qty,
-                                  item_Details.partyName],
+                                  item_Details.partyName,
+                                  item_Details.withBox],
                                   function(err)
    {
       if(err)
@@ -284,105 +300,65 @@ function test_Btn()
 }
 
 
-// Receive the entry from DB
-function getEntryFromDB(sale_list_Entry)
-{
-   //console.log(sale_list);
-   return new Promise ((resolve, reject) =>
-   {
-      db.all('SELECT * FROM inventory WHERE barCode = ? ',[sale_list_Entry.barCode], (err, data) =>
-      {
-         if(err)
-            console.log(err);
-         else
-         {
-            console.log(data);
-            resolve(data);
-         }
-      });
-   })
-}
-
-
-// Reduce the qty in inventory DB
-function updateInvtinDB(data)
-{
-   var qty = data[0].quantity - 1;
-   var barcode = data[0].barCode;
-   console.log("Qty and Barcode is ", qty, "and ", barcode);
-
-   return new Promise ((resolve, reject) =>
-   {
-      db.run('UPDATE inventory SET quantity = ? WHERE barCode = ?', [qty, barcode],
-      function (err)
-      {
-         if(err)
-            reject(err);
-         else
-            resolve();
-      })
-   })
-}
-
 
 // Add sale in sale DB
-function updateSaleinDB(sale_list_Entry)
-{
-   console.log("In updateSaleinDB ", sale_list_Entry);
-   db.run('INSERT into sales(barCode , \
-                                 date, \
-                                 description, \
-                                 landingPrice, \
-                                 sellingPrice, \
-                                 quantity, \
-                                 partyName) \
-                                 values (?, ?, ?, ?, ?, ?, ?)',
-                                 [sale_list_Entry.barCode,
-                                  sale_list_Entry.date,
-                                  sale_list_Entry.description,
-                                  sale_list_Entry.landingPrice,
-                                  sale_list_Entry.sellingPrice,
-                                  sale_list_Entry.qty,
-                                  sale_list_Entry.partyName],
-                                  function(err)
-   {
-      if(err)
-      {
-         alert("Failed to update the database");
-         console.log(err);
-      }
-   })
-}
+// function updateSaleinDB(sale_list_Entry)
+// {
+//    console.log("In updateSaleinDB ", sale_list_Entry);
+//    db.run('INSERT into sales(barCode , \
+//                                  date, \
+//                                  description, \
+//                                  landingPrice, \
+//                                  sellingPrice, \
+//                                  quantity, \
+//                                  partyName) \
+//                                  values (?, ?, ?, ?, ?, ?, ?)',
+//                                  [sale_list_Entry.barCode,
+//                                   sale_list_Entry.date,
+//                                   sale_list_Entry.description,
+//                                   sale_list_Entry.landingPrice,
+//                                   sale_list_Entry.sellingPrice,
+//                                   sale_list_Entry.qty,
+//                                   sale_list_Entry.partyName],
+//                                   function(err)
+//    {
+//       if(err)
+//       {
+//          alert("Failed to update the database");
+//          console.log(err);
+//       }
+//    })
+// }
 
 // Function called from sales.js to update DB
-function priceCalculator_UpdateDB(sale_list)
-{
-   for(var idx = 0; idx < sale_list.length; idx++)
-   {
-      sale_list_Entry = sale_list[idx];
-
-      console.log("In priceCalculator_UpdateDB ",sale_list_Entry);
-      getEntryFromDB(sale_list_Entry).then(data =>
-      {
-         updateInvtinDB(data).then (()=>
-         {
-            console.log(data);
-            sale_list_Entry.description = data[0].description;
-            sale_list_Entry.barCode = data[0].barCode;
-            sale_list_Entry.sellingPrice = data[0].sellingPrice;
-            sale_list_Entry.landingPrice = data[0].landingPrice;
-            sale_list_Entry.partyName = data[0].partyName;
-            sale_list_Entry.date = 1234;
-            sale_list_Entry.qty = 1;
-            updateSaleinDB(sale_list_Entry);
-         }) .catch(err =>
-         {
-            console.log(err);
-         });
-
-      }) .catch(err =>
-      {
-         console.log(err);
-      })
-   }
-}
+// function priceCalculator_UpdateDB(sale_list)
+// {
+//    for(var idx = 0; idx < sale_list.length; idx++)
+//    {
+//       sale_list_Entry = sale_list[idx];
+//
+//       console.log("In priceCalculator_UpdateDB ",sale_list_Entry);
+//       getEntryFromDB(sale_list_Entry).then(data =>
+//       {
+//          updateInvtinDB(data).then (()=>
+//          {
+//             console.log(data);
+//             sale_list_Entry.description = data[0].description;
+//             sale_list_Entry.barCode = data[0].barCode;
+//             sale_list_Entry.sellingPrice = data[0].sellingPrice;
+//             sale_list_Entry.landingPrice = data[0].landingPrice;
+//             sale_list_Entry.partyName = data[0].partyName;
+//             sale_list_Entry.date = 1234;
+//             sale_list_Entry.qty = 1;
+//             updateSaleinDB(sale_list_Entry);
+//          }) .catch(err =>
+//          {
+//             console.log(err);
+//          });
+//
+//       }) .catch(err =>
+//       {
+//          console.log(err);
+//       })
+//    }
+// }
