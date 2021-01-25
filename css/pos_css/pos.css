@@ -14,6 +14,7 @@ body{
 #price_textArea,
 #party_textArea,
 #qty_textArea,
-#item_desc {
+#item_desc,
+#SP_price_textArea {
   resize: none;
 }

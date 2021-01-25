@@ -67,8 +67,13 @@ function price_calulator()
    landing_Price = price * 1.2;
    landing_Price = parseInt(landing_Price);
 
-   selling_Price = landing_Price * 1.7;
-   selling_Price = parseInt(selling_Price);
+   if(document.getElementById("SP_price_textArea").value != "")
+      selling_Price = document.getElementById("SP_price_textArea").value;
+   else
+   {
+      selling_Price = landing_Price * 1.7;
+      selling_Price = parseInt(selling_Price);
+   }
 
    var lastVal = 0;
    lastVal = selling_Price % 10;
