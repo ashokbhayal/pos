@@ -59,6 +59,7 @@ function createWindow () {
       // close worker windows later
       mainWindow = undefined;
       printWindow.close();
+      salesPrintWindow.close();
   });
 
   //Sticker Print window
@@ -70,7 +71,7 @@ function createWindow () {
     }
   })
   printWindow.loadFile("./printWindow_Temp.html");
-  // printWindow.hide();
+  printWindow.hide();
   printWindow.webContents.openDevTools();
   printWindow.on("closed", () => {
       printWindow = undefined;
@@ -85,7 +86,7 @@ function createWindow () {
      }
   })
   salesPrintWindow.loadFile("./salesPrint.html");
-  // salesPrintWindow.hide();
+  salesPrintWindow.hide();
   salesPrintWindow.webContents.openDevTools();
   salesPrintWindow.on("closed", () => {
      salesPrintWindow = undefined;
@@ -95,7 +96,7 @@ function createWindow () {
 
 // retransmit it to printWindow
 ipcMain.on("fillLabelinfo", (event, data) => {
-    console.log(event, data);
+    // console.log(event, data);
     printWindow.webContents.send("fillLabelinfo", data);
 });
 
@@ -117,7 +118,7 @@ ipcMain.on("printLabel", (event, data) => {
 
 
 ipcMain.on("fill_Estimate_Print", (event, data) => {
-    console.log("Trigerred Event ", data);
+    // console.log("Trigerred Event ", data);
     salesPrintWindow.webContents.send("fill_Estimate_Print", data);
 })
 

@@ -223,6 +223,22 @@ db.run('CREATE TABLE IF NOT EXISTS settlement_done(id INTEGER PRIMARY KEY AUTOIN
 
                                                       })
 
+db.run('CREATE TABLE IF NOT EXISTS exchange(id INTEGER PRIMARY KEY AUTOINCREMENT, \
+                                                      date TEXT NOT NULL, \
+                                                      time TEXT NOT NULL, \
+                                                      incomingBarCode INTEGER NOT NULL, \
+                                                      outgoingBarCode INTEGER NOT NULL, \
+                                                      amountPaid INTEGER NOT NULL);',
+                                                      function(err)
+                                                      {
+                                                         if(err)
+                                                         {
+                                                            console.log(err);
+                                                         }
+                                                         console.log("Table created");
+
+                                                      })
+
 // Insert new entry at the end of the barcode
 function insert_inDB()
 {

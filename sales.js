@@ -30,6 +30,12 @@ var subtotal_ValID = document.getElementById("subtotal_th_val");
 
 // })
 
+
+// document.getElementById("content").innerHTML='<object type="text/html" data="home.html" ></object>';
+
+// if (window.location.href == 'file:///C:/POS/pos/sales.html') {
+//     console.log("this is index page ", String(window.location.href = '../'));
+// }
 const table_addDelHandler = document.getElementById('sales_table');
 table_addDelHandler.addEventListener('click',handleDelete)
 
@@ -420,17 +426,5 @@ function makeEntryInTable()
 
       row.append( desc, qty, sp, delContainer, dropDownContainer)
       table.append(row)
-   }
-}
-
-
-
-function enter_Content_test()
-{
-   var data_Array = [48, 49, 50, 51, 52, 53, 54, 55, 13];
-   for(var idx = 0; idx <10; idx++)
-   {
-      event.keyCode = data_Array[idx];
-      enter_Content(event);
    }
 }

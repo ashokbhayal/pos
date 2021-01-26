@@ -33,7 +33,7 @@ ipcRenderer.on("fillLabelinfo", (content,data) =>
 
    for(idx = 0; idx < document.getElementsByClassName("art_no").length; idx++)
    {
-      art_no[idx].innerHTML += data.codedInital + " " + data.partyName;
+      art_no[idx].innerHTML += data.codedInital + "&nbsp&nbsp" + data.partyName;
    }
 
    for(idx = 0; idx < document.getElementsByClassName("mrp_p").length; idx++)
