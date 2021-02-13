@@ -6,6 +6,12 @@ body
    margin-right: 20px;
 }
 
+@page
+{
+   size: 1.2in 1.5in;
+}
+
+
 .label_Div
 {
    font-family: Arial;

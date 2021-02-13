@@ -10,7 +10,7 @@ function load_Settlement()
 
    get_UnsettledEntry().then ((data)=>
    {
-      console.log(data);
+      console.log("Unsettled Entries are ", data);
       data.forEach(element => {
          const {date, time, landingPrice, billingAmount} = element;
 
@@ -99,6 +99,8 @@ async function complete_Settlement()
    var paidBy;
    var settlement_description;
 
+   console.log(table.rows.length);
+
    for(idx = 1; idx < table.rows.length; idx++)
    {
       paidAmount = table.rows[idx].cells[4].getElementsByTagName('textarea')[0].value;
@@ -115,9 +117,18 @@ async function complete_Settlement()
 
          settlement_description = table.rows[idx].cells[6].textContent;
 
-
          console.log(dateStr, timeStr, landingPrice, billingAmount, paidAmount, settlement_description);
-         db.run('INSERT into settlement_done(date, \
+
+         let db = SQL_GB.dbOpen(dbPath);
+
+         if(paidAmount == 0)
+         {
+            console.log("Entered Zero");
+            db.run('DELETE FROM settlement_pending WHERE time=?', [timeStr]);
+            SQL_GB.dbClose(db ,dbPath);
+            continue;
+         }
+         db.exec('INSERT into settlement_done(date, \
                                              time, \
                                              description, \
                                              landingPrice, \
@@ -141,63 +152,65 @@ async function complete_Settlement()
             }
          })
 
+         console.log("Inserting in ");
+
          // Delete from settlement
          db.run('DELETE FROM settlement_pending WHERE time=?', [timeStr]);
 
-         for(idx = 1; idx < table.rows.length; idx++)
+         dateStr = table.rows[idx].cells[0].textContent;
+         timeStr = table.rows[idx].cells[1].textContent;
+         settlement_description = table.rows[idx].cells[6].textContent;
+         var item_Description = JSON.parse(settlement_description);
+
+         for(idx1 = 0; idx1 < item_Description.length; idx1++)
          {
-            dateStr = table.rows[idx].cells[0].textContent;
-            timeStr = table.rows[idx].cells[1].textContent;
-            settlement_description = table.rows[idx].cells[6].textContent;
-            var item_Description = JSON.parse(settlement_description);
-
-            for(idx1 = 0; idx1 < item_Description.length; idx1++)
-            {
-               db.run('INSERT into sales(date, \
-                                         time, \
-                                         barCode, \
-                                         description, \
-                                         landingPriceperPC, \
-                                         sellingPriceperPC, \
-                                         quantity, \
-                                         partyName) \
-                                         values (?, ?, ?, ?, ?, ?, ?, ?)',
-                                         [dateStr,
-                                          timeStr,
-                                          item_Description[idx1].barCode,
-                                          item_Description[idx1].description,
-                                          item_Description[idx1].landingPrice,
-                                          item_Description[idx1].sellingPrice,
-                                          item_Description[idx1].Selling_quantity,
-                                          item_Description[idx1].partyName],
-                                          function(err)
-                {
-                  if(err)
-                  {
-                     alert("Failed to update the database");
-                     console.log(err);
-                  }
-               })
-
-               await getEntryFromDB(item_Description[idx1]).then(data =>
+            db.exec('INSERT into sales(date, \
+                                      time, \
+                                      barCode, \
+                                      description, \
+                                      landingPriceperPC, \
+                                      sellingPriceperPC, \
+                                      quantity, \
+                                      partyName) \
+                                      values (?, ?, ?, ?, ?, ?, ?, ?)',
+                                      [dateStr,
+                                       timeStr,
+                                       item_Description[idx1].barCode,
+                                       item_Description[idx1].description,
+                                       item_Description[idx1].landingPrice,
+                                       item_Description[idx1].sellingPrice,
+                                       item_Description[idx1].Selling_quantity,
+                                       item_Description[idx1].partyName],
+                                       function(err)
+             {
+               if(err)
                {
-                  console.log(item_Description[idx1]);
-                  data[0].quantity -= item_Description[idx1].Selling_quantity;
-                  updateInvtinDB(data).then (()=>
-                  {
-                     console.log(data);
-                  }) .catch(err =>
-                  {
-                     console.log(err);
-                  });
-               })
-           }
-        }
+                  alert("Failed to update the database");
+                  console.log(err);
+               }
+            })
+
+            await getEntryFromDB(item_Description[idx1]).then(data =>
+            {
+               data[0].quantity -= item_Description[idx1].Selling_quantity;
+               db.run('UPDATE inventory SET quantity=? WHERE barCode=?',[data[0].quantity, data[0].barCode]);
+               console.log(item_Description[idx1]);
+            })
+         }
+         SQL_GB.dbClose(db ,dbPath);
       }
       else
-         console.log("No Entry");
+         console.log("Not entered Amount");
    }
    clear_Table(table);
+}
+
+
+
+function insertObject(arr, obj)
+{
+    arr.push(obj);
+    console.log(arr);
 }
 
 
@@ -206,37 +219,24 @@ function get_UnsettledEntry()
 {
    return new Promise ((resolve, reject) =>
    {
-      db.all('SELECT * FROM settlement_pending ORDER BY id', (err, data) =>
-      {
-         if(err)
-            reject(err);
-         else
-            resolve(data);
+      let values = [];
 
-      });
+      let db = SQL_GB.dbOpen(dbPath);
+
+      db.each('SELECT * FROM settlement_pending ORDER BY id', function(row)
+      {
+         insertObject(values, row);
+         console.log(row);
+      })
+
+      SQL_GB.dbClose(db, dbPath)
+
+      console.log(values);
+
+      resolve(values);
    });
 }
 
-
-// Reduce the qty in inventory DB
-function updateInvtinDB(data)
-{
-   var qty = data[0].quantity;
-   var barcode = data[0].barCode;
-   console.log("Qty and Barcode is ", qty, "and ", barcode);
-
-   return new Promise ((resolve, reject) =>
-   {
-      db.run('UPDATE inventory SET quantity = ? WHERE barCode = ?', [qty, barcode],
-      function (err)
-      {
-         if(err)
-            reject(err);
-         else
-            resolve();
-      })
-   })
-}
 
 
 // Receive the entry from DB
@@ -244,16 +244,30 @@ async function getEntryFromDB(sale_list_Entry)
 {
    return new Promise ((resolve, reject) =>
    {
-      db.all('SELECT * FROM inventory WHERE barCode = ? ',[sale_list_Entry.barCode], (err, data) =>
-      {
-         if(err)
-            console.log(err);
-         else
-         {
-            console.log(data);
-            resolve(data);
+      let values;
+
+      let db = SQL_GB.dbOpen(dbPath);
+
+      var statement = db.prepare('SELECT * FROM inventory WHERE barCode = ?',[sale_list_Entry.barCode]);
+
+      try {
+         if (statement.step()) {
+            values = [statement.getAsObject()]
+            let columns = statement.getColumnNames()
+            console.log("Values: ", values, "Columns ", columns);
+            // return _rowsFromSqlDataObject({values: values, columns: columns})
+         } else {
+            console.log('Error ', 'No data found for person_id =', pid)
          }
-      });
+      } catch (error) {
+         console.log('Error ', error.message)
+      } finally {
+         console.log("Closing DB");
+         SQL_GB.dbClose(db, dbPath)
+      }
+
+      resolve(values);
+
    })
 }
 

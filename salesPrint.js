@@ -10,6 +10,7 @@ ipcRenderer.on("fill_Estimate_Print", (content,data) =>
 
    var add_Date = document.getElementById("data_p");
    add_Date.innerHTML = "";
+   add_Date.innerHTML = "Date: ";
    add_Date.innerHTML += datetime.getDate();
    add_Date.innerHTML += "/";
    add_Date.innerHTML += (datetime.getMonth()+1);
@@ -18,6 +19,7 @@ ipcRenderer.on("fill_Estimate_Print", (content,data) =>
 
    var add_Time = document.getElementById("time_p");
    add_Time.innerHTML = "";
+   add_Time.innerHTML = "Time: ";
    add_Time.innerHTML += datetime.getHours();
    add_Time.innerHTML += ":";
    add_Time.innerHTML += (datetime.getMinutes());
@@ -73,7 +75,12 @@ ipcRenderer.on("fill_Estimate_Print", (content,data) =>
       row.append( desc, qty, rate, sp)
       table.append(row)
 
-      ipcRenderer.send("printEstimate");
+      print_Sales()
+
+      // ipcRenderer.send("printEstimate");
+      // sleep(1000);
+      // console.log("Printing estimate again");
+      // ipcRenderer.send("printEstimate");
 
       // calculateSubTotal(idx);
 
@@ -91,20 +98,23 @@ ipcRenderer.on("add_Estimate_Total", (content,data) =>
 })
 
 
-async function print_Sales()
-{
-   for(idx = 0; idx <1; idx++)
-   {
-      ipcRenderer.send("printEstimate", sale_list);
-      // await sleep(1000);
-   }
-
-}
-
 function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+}
+
+
+async function print_Sales()
+{
+   const print_Count = 2;
+   for(var idx = 0; idx <print_Count; idx++)
+   {
+      ipcRenderer.send("printEstimate");
+      console.log("Printing ", idx, "st  page");
+      await sleep(2000);
+   }
+
 }
 
 

@@ -27,6 +27,7 @@
     "electron-rebuild": "^2.3.4"
   },
   "dependencies": {
+    "csv-parser": "^3.0.0",
     "electron": "^10.1.4",
     "electron-builder": "^22.9.1",
     "electron-pos-printer": "^1.2.4",
@@ -36,8 +37,8 @@
     "jsonfile": "^6.1.0",
     "node-gyp": "^7.1.2",
     "pdf-to-printer": "^1.5.2",
+    "sql.js": "^1.4.0",
     "sqlite": "^4.0.19",
-    "sqlite3": "^4.2.0",
     "wait.for-es6": "^0.1.0"
   }
 }

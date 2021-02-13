@@ -3,7 +3,7 @@
 // const $ = require('jquery');
 // var sales_print_tableAppend = require('./salesPrint');
 // const jsonfile = require('jsonfile');
-const fs = require('fs');
+// const fs = require('fs');
 const ipcRenderer = require("electron").ipcRenderer;
 
 var enteredBarCode = "";
@@ -234,15 +234,32 @@ function getItemfromDB(enteredBarCode)
    return new Promise ((resolve, reject) =>
    {
       console.log('before db all')
-      db.all('SELECT * FROM inventory WHERE barCode=?', [enteredBarCode], (error, data) =>
-      {
-         console.log(data)
-         if(error)
-            reject(error);
-         else
-            resolve(data);
 
-      });
+      let values;
+
+      let db = SQL_GB.dbOpen(dbPath);
+      var statement = db.prepare('SELECT * FROM inventory WHERE barCode IS ?', [enteredBarCode]);
+
+      try {
+         if (statement.step()) {
+            values = [statement.getAsObject()]
+            let columns = statement.getColumnNames()
+            console.log("Values: ", values, "Columns ", columns);
+            // return _rowsFromSqlDataObject({values: values, columns: columns})
+         } else {
+            console.log('model.getPeople', 'No data found for person_id =', pid)
+         }
+      } catch (error) {
+         console.log('model.getPeople', error.message)
+      } finally {
+         SQL_GB.dbClose(db, dbPath)
+      }
+         //    reject(error);
+         // else
+         //    resolve(data);
+
+      // });
+       resolve(values);
    });
 }
 
@@ -250,6 +267,10 @@ function getItemfromDB(enteredBarCode)
 function __updateUndoneSettlement()
 {
    var total_landingPrice = 0;
+
+   console.log(date);
+
+   date = new Date;
 
    var dateStr = date.getDate().toString(10);
    dateStr = dateStr.concat(" ");
@@ -273,7 +294,9 @@ function __updateUndoneSettlement()
    var total_sellingPrice = grandTotal;
    var salesTable_Str = JSON.stringify(sale_list);
 
-   db.run('INSERT into settlement_pending(date, \
+   let db = SQL_GB.dbOpen(dbPath);
+
+   db.exec('INSERT into settlement_pending(date, \
                                           time, \
                                           description, \
                                           landingPrice, \
@@ -295,6 +318,8 @@ function __updateUndoneSettlement()
          total_landingPrice = 0;
       }
    })
+
+   SQL_GB.dbClose(db ,dbPath);
 
    //priceCalculator_UpdateDB(sale_list);
 }

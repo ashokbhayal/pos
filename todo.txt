@@ -1,3 +1,9 @@
 1) fix delete table
 2) fix subTotal
-3) fix sales print time and date 
+3) fix sales print time and date
+
+//NEW
+1) Fix Entry in the Inventory
+2) Fix sales
+3) Fix settlement_pending
+4) Fix settlement_done

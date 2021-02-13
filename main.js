@@ -14,10 +14,12 @@ app.allowRendererProcessReuse = false;
 
 var Inventory_printOptions = {
     preview: true,
-    silent: true,
+    silent: false,
     printBackground: false,
     //deviceName: 'Canon LBP2900',
-    deviceName: 'TSC TTP-244 Pro',
+    // deviceName:'Canon G3010 series',
+   deviceName: 'TSC TTP-244 Pro',
+    // deviceName: 'SNBC TVSE LP 46 NEO BPLE',
    //deviceName: 'EPSON TM-T82 Receipt',
    //  pageSize: {
    //    height: 140000,
@@ -71,7 +73,7 @@ function createWindow () {
     }
   })
   printWindow.loadFile("./printWindow_Temp.html");
-  printWindow.hide();
+  // printWindow.hide();
   printWindow.webContents.openDevTools();
   printWindow.on("closed", () => {
       printWindow = undefined;
@@ -102,13 +104,13 @@ ipcMain.on("fillLabelinfo", (event, data) => {
 
 // when label print window is ready
 ipcMain.on("printLabel", (event, data) => {
-   // console.log("In printLabel IPC ", data);
-   // if((data.withBox) == 0)
-   //    Inventory_printOptions.copies = Math.ceil((data.qty/2));
-   // else
-   //    Inventory_printOptions.copies = data.qty;
-   //
-   //  console.log("Print Values ", Inventory_printOptions);
+   console.log("In printLabel IPC ", data);
+   if((data.withBox) == 0)
+      Inventory_printOptions.copies = Math.ceil((data.qty/2));
+   else
+      Inventory_printOptions.copies = data.qty;
+
+    console.log("Print Values ", Inventory_printOptions);
 
     printWindow.webContents.print(Inventory_printOptions, (success, failureReason) => {
       if (!success)

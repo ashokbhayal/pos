@@ -1,8 +1,8 @@
 
 function exchange()
 {
-   const incomingBarCode = document.getElementById("incmg_BarCode").value;
-   const outgoingBarCode = document.getElementById("otgng_BarCode").value;
+   const incomingBarCode = parseInt(document.getElementById("incmg_BarCode").value);
+   const outgoingBarCode = parseInt(document.getElementById("otgng_BarCode").value);
    const exchangeAmount = parseInt(document.getElementById("exch_Amount").value);
 
    getItemfromDBforExchange(incomingBarCode).then(ingData =>
@@ -33,8 +33,10 @@ function exchange()
 
             updateExchgInvtinDB(otgData).then(data1 =>
             {
-               console.log(data1);
-               db.run('INSERT into exchange(date, \
+               // console.log(data1);
+               let db = SQL_GB.dbOpen(dbPath);
+
+               db.exec('INSERT into exchange(date, \
                                             time, \
                                             incomingBarCode, \
                                             outgoingBarCode, \
@@ -53,6 +55,8 @@ function exchange()
                          console.log(err);
                       }
                   })
+               SQL_GB.dbClose(db ,dbPath);
+
             })
         })
      })
@@ -67,16 +71,29 @@ function getItemfromDBforExchange(enteredBarCode)
    console.log('inside getItemfromDB')
    return new Promise ((resolve, reject) =>
    {
-      console.log('before db all')
-      db.all('SELECT * FROM inventory WHERE barCode=?', [enteredBarCode], (error, data) =>
-      {
-         console.log(data)
-         if(error)
-            reject(error);
-         else
-            resolve(data);
+      let values;
 
-      });
+      let db = SQL_GB.dbOpen(dbPath);
+
+      console.log('before db all')
+      var statement = db.prepare('SELECT * FROM inventory WHERE barCode = ?',[enteredBarCode]);
+      try {
+         if (statement.step()) {
+            values = [statement.getAsObject()]
+            let columns = statement.getColumnNames()
+            console.log("Values: ", values, "Columns ", columns);
+            // return _rowsFromSqlDataObject({values: values, columns: columns})
+         } else {
+            console.log('Error ', 'No data found for person_id =', pid)
+         }
+      } catch (error) {
+         console.log('Error ', error.message)
+      } finally {
+         console.log("Closing DB");
+         SQL_GB.dbClose(db, dbPath)
+      }
+
+      resolve(values);
    });
 }
 
@@ -88,6 +105,8 @@ function updateExchgInvtinDB(data)
 
    return new Promise ((resolve, reject) =>
    {
+      let db = SQL_GB.dbOpen(dbPath);
+
       db.run('UPDATE inventory SET quantity = ? WHERE barCode = ?', [qty, barcode],
       function (err)
       {
@@ -95,8 +114,9 @@ function updateExchgInvtinDB(data)
          {
             reject(err);
          }
-         else
-            resolve();
       })
+      SQL_GB.dbClose(db ,dbPath);
+      resolve();
+
    })
 }
