@@ -1,3 +1,59 @@
+function addReturnItem(incomingBarCode, exchangeAmount)
+{
+   var outgoingBarCode = 0;
+   // var amountPaid = exchangeAmount;
+   getItemfromDBforExchange(incomingBarCode).then(ingData =>
+   {
+      ingData[0].quantity++;
+      console.log("Incoming Barcode Found ", ingData);
+      updateExchgInvtinDB(ingData).then(data =>
+      {
+         console.log("Successfully updated");
+         let db = SQL_GB.dbOpen(dbPath);
+
+         var dateStr = date.getDate().toString(10);
+         dateStr = dateStr.concat(" ");
+         dateStr = dateStr.concat(date.toLocaleString('default', {month: 'short'}));
+         dateStr = dateStr.concat(" ");
+         dateStr = dateStr.concat(date.getFullYear().toString(10));
+         // console.log(date.toLocaleString('default', {month: 'short'}));
+
+         var time_Str = date.getHours().toString(10);
+         time_Str = time_Str.concat(":");
+         time_Str = time_Str.concat(date.getMinutes().toString(10));
+         time_Str = time_Str.concat(":");
+         time_Str = time_Str.concat(date.getSeconds().toString(10));
+
+         db.exec('INSERT into exchange(date, \
+                                      time, \
+                                      incomingBarCode, \
+                                      outgoingBarCode, \
+                                      amountPaid) \
+                                      values (?, ?, ?, ?, ?)',
+                                      [dateStr,
+                                       time_Str,
+                                       ingData[0].barCode,
+                                       outgoingBarCode,
+                                       exchangeAmount],
+                                       function(err)
+            {
+                if(err)
+                {
+                   alert("Failed to update the database");
+                   console.log(err);
+                }
+            })
+         SQL_GB.dbClose(db ,dbPath);
+
+         document.getElementById("incmg_BarCode").value = "";
+         document.getElementById("otgng_BarCode").value = "";
+         document.getElementById("exch_Amount").value = "";
+
+      })
+   })
+}
+
+
 
 function exchange()
 {
@@ -5,6 +61,13 @@ function exchange()
    const outgoingBarCode = parseInt(document.getElementById("otgng_BarCode").value);
    const exchangeAmount = parseInt(document.getElementById("exch_Amount").value);
 
+   if(outgoingBarCode == 0)
+   {
+      // Return
+      console.log("Found Zero");
+      addReturnItem(incomingBarCode, exchangeAmount);
+      return;
+   }
    getItemfromDBforExchange(incomingBarCode).then(ingData =>
    {
       console.log("Incoming Barcode Found ", ingData);
@@ -12,7 +75,7 @@ function exchange()
       {
          ingData[0].quantity++;
          otgData[0].quantity--;
-         console.log("OutGoing Barcode Found");
+         console.log("OutGoing Barcode Found", otgData);
          updateExchgInvtinDB(ingData).then(data =>
          {
             var dateStr = date.getDate().toString(10);
@@ -33,6 +96,9 @@ function exchange()
 
             updateExchgInvtinDB(otgData).then(data1 =>
             {
+               document.getElementById("incmg_BarCode").value = "";
+               document.getElementById("otgng_BarCode").value = "";
+               document.getElementById("exch_Amount").value = "";
                // console.log(data1);
                let db = SQL_GB.dbOpen(dbPath);
 
@@ -56,7 +122,6 @@ function exchange()
                       }
                   })
                SQL_GB.dbClose(db ,dbPath);
-
             })
         })
      })
@@ -84,7 +149,7 @@ function getItemfromDBforExchange(enteredBarCode)
             console.log("Values: ", values, "Columns ", columns);
             // return _rowsFromSqlDataObject({values: values, columns: columns})
          } else {
-            console.log('Error ', 'No data found for person_id =', pid)
+            console.log('Error ', 'No data found')
          }
       } catch (error) {
          console.log('Error ', error.message)

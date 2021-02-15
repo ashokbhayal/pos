@@ -1,3 +1,4 @@
+const ipcRenderer = require("electron").ipcRenderer;
 
 function load_Settlement()
 {
@@ -98,6 +99,8 @@ async function complete_Settlement()
    var paidById;
    var paidBy;
    var settlement_description;
+   var settlementList = [];
+   var settlementObj = {};
 
    console.log(table.rows.length);
 
@@ -105,6 +108,7 @@ async function complete_Settlement()
    {
       paidAmount = table.rows[idx].cells[4].getElementsByTagName('textarea')[0].value;
       console.log("Paid amount is ",paidAmount);
+
       if(paidAmount != "")
       {
          dateStr = table.rows[idx].cells[0].textContent;
@@ -112,8 +116,17 @@ async function complete_Settlement()
          landingPrice = table.rows[idx].cells[2].textContent;
          billingAmount = table.rows[idx].cells[3].textContent;
 
+         // settlementObj.paidAmount = paidAmount;
+         // settlementObj.timeStr = timeStr;
+         // settlementObj.landingPrice = landingPrice;
+         // settlementObj.billingAmount = billingAmount;
+
          paidById = document.getElementById('paidBy_DropDown');
          paidBy = paidById.options[paidById.selectedIndex].text
+
+         // settlementObj.paidBy = paidBy;
+         //
+         // settlementList.push(settlementObj);
 
          settlement_description = table.rows[idx].cells[6].textContent;
 
@@ -202,6 +215,7 @@ async function complete_Settlement()
       else
          console.log("Not entered Amount");
    }
+   // ipcRenderer.send("fill_settlement_Print", settlementList);
    clear_Table(table);
 }
 

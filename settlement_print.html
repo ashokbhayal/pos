@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <link rel="stylesheet" href="./css/pos_css/settlement_print.css"/>
+</head>
+<body>
+   <div class= "label_Div" id= "left_Label">
+      <div id= "header">
+         <img src="./images/logo.jpeg" alt="logo">
+         <h2 class= shopName>AAIJI GARMENT</h2>
+      </div>
+      <p> Gandhi Circle, Anekal - 562106</p>
+      <p id="data_p">Date: </p>
+   </div>
+   <hr>
+   <div class="row col-md-12 table-wrapper-scroll-y my-custom-scrollbar">
+      <table class = "table table-hover table-striped" id = "sales_PrintTable">
+         <tr>
+            <th id = "desc">Time</th>
+            <th id="qty">Cost P</th>
+            <th id="rate">Sell P</th>
+            <th id="amount">Amount</th>
+            <th id="paidBy">Paid By</th>
+         </tr>
+      </table>
+   </div>
+   <hr>
+   <div class="total_row col-md-12">
+      <table id = "total_table">
+         <tr>
+            <th id ="subtotal_th">Total Landing Price:</th>
+            <th id="subtotal_th_val" style="text-align:right"></th>
+         </tr>
+         <tr>
+            <th id="total_th">Total Selling Price:</th>
+            <th id="total_th_val"style="text-align:right"></th>
+         </tr>
+      </table>
+   </div>
+
+   <div>
+     <script type="text/javascript" src="./settlement_print.js"></script>
+   </div>
+
+</body>
+</html>

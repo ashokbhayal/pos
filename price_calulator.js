@@ -422,6 +422,8 @@ async function add_Inventory_Qty()
          db.run('UPDATE inventory SET quantity=? WHERE barCode=?',[new_Qty, add_barCode]);
          SQL_GB.dbClose(db ,dbPath);
 
+         document.getElementById("add_Qty_textArea").value = '';
+         document.getElementById("add_BarCode_textArea").value = '';
       }
    }
 }

@@ -43,10 +43,10 @@ ipcRenderer.on("fillLabelinfo", (content,data) =>
 
    JsBarcode("#barcode", ("00000000" + data.barCode).slice(-8), {
      format: "CODE128",
-     width: 1.5,
+     width: 1.6,
      height: 30,
      textAlign: "center",
-     fontSize: 15,
+     fontSize: 20,
      font: "Arial",
      displayValue: true,
      margin: 0

@@ -288,7 +288,7 @@ function __updateUndoneSettlement()
 
    for(item of sale_list)
    {
-      total_landingPrice += item.landingPrice;
+      total_landingPrice += (item.landingPrice * item.Selling_quantity);
    }
 
    var total_sellingPrice = grandTotal;

@@ -13,13 +13,13 @@ app.allowRendererProcessReuse = false;
 
 
 var Inventory_printOptions = {
-    preview: true,
-    silent: false,
-    printBackground: false,
+    preview: false,
+    silent: true,
+    printBackground: true,
     //deviceName: 'Canon LBP2900',
     // deviceName:'Canon G3010 series',
-   deviceName: 'TSC TTP-244 Pro',
-    // deviceName: 'SNBC TVSE LP 46 NEO BPLE',
+   // deviceName: 'TSC TTP-244 Pro',
+    deviceName: 'SNBC TVSE LP 46 NEO BPLE',
    //deviceName: 'EPSON TM-T82 Receipt',
    //  pageSize: {
    //    height: 140000,
@@ -55,13 +55,14 @@ function createWindow () {
     }
   })
   mainWindow.loadFile("./sales.html");
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
   mainWindow.on("closed", () => {
 
       // close worker windows later
       mainWindow = undefined;
       printWindow.close();
       salesPrintWindow.close();
+      settlementPrintWindow.close();
   });
 
   //Sticker Print window
@@ -73,7 +74,7 @@ function createWindow () {
     }
   })
   printWindow.loadFile("./printWindow_Temp.html");
-  // printWindow.hide();
+  printWindow.hide();
   printWindow.webContents.openDevTools();
   printWindow.on("closed", () => {
       printWindow = undefined;
@@ -92,6 +93,21 @@ function createWindow () {
   salesPrintWindow.webContents.openDevTools();
   salesPrintWindow.on("closed", () => {
      salesPrintWindow = undefined;
+  });
+
+  //Settlement print window
+  settlementPrintWindow = new BrowserWindow({
+     width: 800,
+     height: 600,
+     webPreferences: {
+        nodeIntegration: true
+     }
+  })
+  settlementPrintWindow.loadFile("./settlement_print.html");
+  settlementPrintWindow.hide();
+  settlementPrintWindow.webContents.openDevTools();
+  settlementPrintWindow.on("closed", () => {
+     settlementPrintWindow = undefined;
   });
 
 }
@@ -121,9 +137,13 @@ ipcMain.on("printLabel", (event, data) => {
 
 ipcMain.on("fill_Estimate_Print", (event, data) => {
     // console.log("Trigerred Event ", data);
-    salesPrintWindow.webContents.send("fill_Estimate_Print", data);
+       salesPrintWindow.webContents.send("fill_Estimate_Print", data);
 })
 
+ipcMain.on("fill_settlement_Print", (event, data) => {
+    console.log("Trigerred Event ", data);
+    settlementPrintWindow.webContents.send("fill_settlement_Print", data);
+})
 
 // Print Estimate window is ready
 ipcMain.on("printEstimate", (event) => {
