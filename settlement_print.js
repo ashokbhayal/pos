@@ -3,126 +3,94 @@ const ipcRenderer = require("electron").ipcRenderer;
 
 ipcRenderer.on("fill_settlement_Print", (content,data) =>
 {
+   var table = document.getElementById("settlement_PrintTable").getElementsByTagName('tbody')[0];
+
    console.log("In settlement");
    console.log(data);
 
-   // clear_Table();
+   clear_Table();
 
-   // var datetime = new Date();
-   //
-   // var add_Date = document.getElementById("data_p");
-   // add_Date.innerHTML = "";
-   // add_Date.innerHTML = "Date: ";
-   // add_Date.innerHTML += datetime.getDate();
-   // add_Date.innerHTML += "/";
-   // add_Date.innerHTML += (datetime.getMonth()+1);
-   // add_Date.innerHTML += "/";
-   // add_Date.innerHTML += datetime.getFullYear();
-   //
-   // var add_Time = document.getElementById("time_p");
-   // add_Time.innerHTML = "";
-   // add_Time.innerHTML = "Time: ";
-   // add_Time.innerHTML += datetime.getHours();
-   // add_Time.innerHTML += ":";
-   // add_Time.innerHTML += (datetime.getMinutes());
-   // add_Time.innerHTML += ":";
-   // add_Time.innerHTML += datetime.getSeconds();
-   //
-   // console.log("Found this data", data);
-   // var table = document.getElementById("sales_PrintTable").getElementsByTagName('tbody')[0];
-   //
-   // console.log("Display table ", table);
-   // sale_list = data;
-   //
-   // for(idx = 0; idx < sale_list.length; idx ++)
-   // {
-   //    const { description, id, sellingPrice, barCode, Selling_quantity } = sale_list[idx];
-   //
-   //    console.log(sale_list[idx]);
-   //
-   //    sale_list[idx].index = idx;
-   //
-   //    var row = document.createElement('tr') ;
-   //
-   //    //* use a create table row function,
-   //    //* which takes data and returns element
-   //    const desc = document.createElement("td")
-   //
-   //    const qty = document.createElement("td")
-   //    qty.setAttribute("name", "name_qty");
-   //
-   //    const rate = document.createElement("td")
-   //
-   //    const sp = document.createElement("td")
-   //    sp.setAttribute("name", "sp");
-   //
-   //    row.setAttribute("id", idx);
-   //
-   //    // Description of product
-   //    desc.textContent = description
-   //    desc.style.textAlign = "left"
-   //
-   //    // Quantity
-   //    qty.textContent = Selling_quantity;
-   //    qty.style.textAlign = "center"
-   //
-   //    // Rate
-   //    rate.textContent = sellingPrice;
-   //    rate.style.textAlign = "center"
-   //
-   //    // Selling Price
-   //    sp.textContent = (sellingPrice * Selling_quantity);
-   //    sp.style.textAlign = "right"
-   //
-   //    row.append( desc, qty, rate, sp)
-   //    table.append(row)
-   //
-   //    print_Sales()
-   //
-   //    // ipcRenderer.send("printEstimate");
-   //    // sleep(1000);
-   //    // console.log("Printing estimate again");
-   //    // ipcRenderer.send("printEstimate");
-   //
-   //    // calculateSubTotal(idx);
+   var total_landingPrice = 0;
+   var total_sellingPrice = 0;
+   var total_AmountRcvd = 0;
 
-   //}
+   var datetime = new Date();
+
+   var add_Date = document.getElementById("data_p");
+   add_Date.innerHTML = "";
+   add_Date.innerHTML = "Date: ";
+   add_Date.innerHTML += datetime.getDate();
+   add_Date.innerHTML += "/";
+   add_Date.innerHTML += (datetime.getMonth()+1);
+   add_Date.innerHTML += "/";
+   add_Date.innerHTML += datetime.getFullYear();
+
+   settlement_list = data;
+
+   for(idx = 0; idx < settlement_list.length; idx ++)
+   {
+      // const { description, id, sellingPrice, barCode, Selling_quantity } = sale_list[idx];
+
+      const {timeStr, landingPrice, billingAmount, paidAmount, paidBy} = settlement_list[idx];
+
+      var row = document.createElement('tr') ;
+
+      //* use a create table row function,
+      //* which takes data and returns element
+      const time_td = document.createElement("td")
+
+      const landing_Price_td = document.createElement("td")
+      // landing_Price_td.setAttribute("name", "name_qty");
+
+      const billingAmount_td = document.createElement("td")
+
+      const paidAmount_td = document.createElement("td")
+      const paidBy_td = document.createElement("td")
+
+      // sp.setAttribute("name", "sp");
+
+      row.setAttribute("id", idx);
+
+      // Description of product
+      time_td.textContent = timeStr
+      time_td.style.textAlign = "left"
+
+      // Quantity
+      landing_Price_td.textContent = landingPrice;
+      landing_Price_td.style.textAlign = "center"
+
+      // Rate
+      billingAmount_td.textContent = billingAmount;
+      billingAmount_td.style.textAlign = "center"
+
+      // Selling Price
+      paidAmount_td.textContent = paidAmount;
+      paidAmount_td.style.textAlign = "center"
+
+      paidBy_td.textContent = paidBy;
+      paidBy_td.style.textAlign = "right"
+
+      row.append( time_td, landing_Price_td, billingAmount_td, paidAmount_td, paidBy_td)
+      table.append(row)
+
+      total_landingPrice += parseInt(landingPrice);
+      total_sellingPrice += parseInt(billingAmount);
+      total_AmountRcvd += parseInt(paidAmount);
+   }
+
+   document.getElementById("landing_Price_th_Val").textContent = total_landingPrice;
+   document.getElementById("selling_Price_th_Val").textContent = total_sellingPrice;
+   document.getElementById("paidAmount_th_val").textContent = total_AmountRcvd;
+
+   ipcRenderer.send("printSettlement");
 
 });
 
 
-ipcRenderer.on("add_Estimate_Total", (content,data) =>
-{
-   console.log("Total Content is ", data);
-   document.getElementById("subtotal_th_val").textContent = data.subTotal;
-   document.getElementById("discount_td_val").textContent = data.discount;
-   document.getElementById("total_th_val").textContent = data.grandTotal;
-})
-
-
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
-
-async function print_Sales()
-{
-   const print_Count = 2;
-   for(var idx = 0; idx <print_Count; idx++)
-   {
-      ipcRenderer.send("printEstimate");
-      console.log("Printing ", idx, "st  page");
-      await sleep(2000);
-   }
-
-}
-
 
 function clear_Table()
 {
-   var elmtTable = document.getElementById('sales_PrintTable');
+   var elmtTable = document.getElementById('settlement_PrintTable');
    var tableRows = elmtTable.getElementsByTagName('tr');
    var rowCount = tableRows.length;
 
@@ -135,8 +103,6 @@ function clear_Table()
       for (var x = rowCount - 1; x > 0; x--)
       {
          console.log("Deleting row");
-         // elmtTable.parentNode.removeChild(tableRows[x]);
-
          elmtTable.deleteRow(x);
       }
    }

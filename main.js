@@ -63,6 +63,7 @@ function createWindow () {
       printWindow.close();
       salesPrintWindow.close();
       settlementPrintWindow.close();
+      exchangePrintWindow.close();
   });
 
   //Sticker Print window
@@ -110,6 +111,21 @@ function createWindow () {
      settlementPrintWindow = undefined;
   });
 
+  //Settlement print window
+  exchangePrintWindow = new BrowserWindow({
+     width: 800,
+     height: 600,
+     webPreferences: {
+        nodeIntegration: true
+     }
+  })
+  exchangePrintWindow.loadFile("./exchange_print.html");
+  exchangePrintWindow.hide();
+  exchangePrintWindow.webContents.openDevTools();
+  exchangePrintWindow.on("closed", () => {
+     exchangePrintWindow = undefined;
+  });
+
 }
 
 // retransmit it to printWindow
@@ -136,13 +152,18 @@ ipcMain.on("printLabel", (event, data) => {
 
 
 ipcMain.on("fill_Estimate_Print", (event, data) => {
-    // console.log("Trigerred Event ", data);
+    console.log("Trigerred Event ", data);
        salesPrintWindow.webContents.send("fill_Estimate_Print", data);
 })
 
 ipcMain.on("fill_settlement_Print", (event, data) => {
     console.log("Trigerred Event ", data);
     settlementPrintWindow.webContents.send("fill_settlement_Print", data);
+})
+
+ipcMain.on("fill_Exchange_Print", (event, data) => {
+    // console.log("Trigerred Event ", data);
+       exchangePrintWindow.webContents.send("fill_Exchange_Print", data);
 })
 
 // Print Estimate window is ready
@@ -154,11 +175,25 @@ ipcMain.on("printEstimate", (event) => {
 });
 
 
+ipcMain.on("printSettlement", (event) => {
+    settlementPrintWindow.webContents.print(sales_printOptions, (success, failureReason) => {
+      if (!success)
+         console.log(failureReason);
+    });
+});
+
+
 ipcMain.on("fill_Estimate_Total", (event, data) => {
     console.log("Trigerred Event ", data);
     salesPrintWindow.webContents.send("add_Estimate_Total", data);
 })
 
+ipcMain.on("printExchange", (event) => {
+    exchangePrintWindow.webContents.print(sales_printOptions, (success, failureReason) => {
+      if (!success)
+         console.log(failureReason);
+    });
+});
 
 app.whenReady().then(createWindow)
 

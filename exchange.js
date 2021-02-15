@@ -1,3 +1,5 @@
+// const ipcRenderer = require("electron").ipcRenderer;
+
 function addReturnItem(incomingBarCode, exchangeAmount)
 {
    var outgoingBarCode = 0;
@@ -99,6 +101,7 @@ function exchange()
                document.getElementById("incmg_BarCode").value = "";
                document.getElementById("otgng_BarCode").value = "";
                document.getElementById("exch_Amount").value = "";
+
                // console.log(data1);
                let db = SQL_GB.dbOpen(dbPath);
 
@@ -122,6 +125,8 @@ function exchange()
                       }
                   })
                SQL_GB.dbClose(db ,dbPath);
+
+               print_Exchange(ingData[0].barCode, otgData[0].barCode, exchangeAmount);
             })
         })
      })
@@ -184,4 +189,18 @@ function updateExchgInvtinDB(data)
       resolve();
 
    })
+}
+
+
+
+function print_Exchange(incmgBarCode, outgngBarCode, Amount)
+{
+   var data = {};
+
+   data.incmgBarCode = incmgBarCode;
+   data.outgngBarCode = outgngBarCode;
+   data.Amount = Amount;
+
+   console.log("Calling Print Fn", incmgBarCode, outgngBarCode, Amount);
+   ipcRenderer.send("fill_Exchange_Print", data);
 }

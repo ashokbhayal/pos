@@ -99,13 +99,13 @@ async function complete_Settlement()
    var paidById;
    var paidBy;
    var settlement_description;
-   var settlementList = [];
-   var settlementObj = {};
+   var settlementList = new Array();
 
    console.log(table.rows.length);
 
    for(idx = 1; idx < table.rows.length; idx++)
    {
+      var settlementObj = {};
       paidAmount = table.rows[idx].cells[4].getElementsByTagName('textarea')[0].value;
       console.log("Paid amount is ",paidAmount);
 
@@ -116,17 +116,19 @@ async function complete_Settlement()
          landingPrice = table.rows[idx].cells[2].textContent;
          billingAmount = table.rows[idx].cells[3].textContent;
 
-         // settlementObj.paidAmount = paidAmount;
-         // settlementObj.timeStr = timeStr;
-         // settlementObj.landingPrice = landingPrice;
-         // settlementObj.billingAmount = billingAmount;
+         settlementObj.paidAmount = paidAmount;
+         settlementObj.timeStr = timeStr;
+         settlementObj.landingPrice = landingPrice;
+         settlementObj.billingAmount = billingAmount;
 
-         paidById = document.getElementById('paidBy_DropDown');
-         paidBy = paidById.options[paidById.selectedIndex].text
+         paidById = table.rows[idx].cells[5].getElementsByTagName('select');
+         paidBy = paidById[0].options[paidById[0].selectedIndex].text;
 
-         // settlementObj.paidBy = paidBy;
-         //
-         // settlementList.push(settlementObj);
+         settlementObj.paidBy = paidBy;
+
+         settlementList.push(settlementObj);
+         console.log("Printing Settlement Obj", settlementObj);
+         console.log("Printing settlementList", settlementList);
 
          settlement_description = table.rows[idx].cells[6].textContent;
 
@@ -215,8 +217,16 @@ async function complete_Settlement()
       else
          console.log("Not entered Amount");
    }
-   // ipcRenderer.send("fill_settlement_Print", settlementList);
+   fill_Settlement_PrintPage(settlementList);
    clear_Table(table);
+}
+
+
+
+function fill_Settlement_PrintPage(settlementList)
+{
+   ipcRenderer.send("fill_settlement_Print", settlementList);
+   console.log("Filling the list", settlementList);
 }
 
 
