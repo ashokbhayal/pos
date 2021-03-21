@@ -36,6 +36,16 @@ initSqlJs({
                                               partyName TEXT(255,0) NOT NULL, \
                                               withBox INTEGER NOT NULL)")
 
+    db.exec('CREATE TABLE IF NOT EXISTS purchase(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT  , \
+                                                 date TEXT(255,0) NOT NULL, \
+                                                 barCode INTEGER NOT NULL, \
+                                                 description TEXT(255,0) NOT NULL, \
+                                                 landingPrice INTEGER NOT NULL, \
+                                                 sellingPrice INTEGER NOT NULL, \
+                                                 quantity INTEGER NOT NULL, \
+                                                 partyName TEXT(255,0) NOT NULL, \
+                                                 withBox INTEGER NOT NULL)')
+
     db.exec('CREATE TABLE IF NOT EXISTS sales(id INTEGER PRIMARY KEY AUTOINCREMENT, \
                                                  date TEXT NOT NULL, \
                                                  time TEXT NOT NULL, \
@@ -219,7 +229,10 @@ function price_calulator()
    landing_Price = parseInt(landing_Price);
 
    if(document.getElementById("SP_price_textArea").value != "")
-      selling_Price = document.getElementById("SP_price_textArea").value;
+   {
+      var selling_Price_Temp = document.getElementById("SP_price_textArea").value;
+      selling_Price = parseInt(selling_Price_Temp);
+   }
    else
    {
       selling_Price = landing_Price * 1.7;
@@ -277,11 +290,21 @@ function price_calulator()
    getLastEntry().then(data =>
    {
       console.log("Resolved promise ", data);
-      // console.log(data[0]);
-      prev_barCode = data[0].barCode;
-      next_barCode = ++prev_barCode;
+      console.log(data[0]);
+      prev_id = data[0].id;
+      next_barCode = (prev_id + 5001);
       insert_inDB(item_Details);
       print_StickerFn(item_Details, next_barCode);
+
+      document.getElementById("price_textArea").value = "";
+      document.getElementById("qty_textArea").value = "";
+      document.getElementById("SP_price_textArea").value = "";
+
+      document.getElementById("print_Sticker").disabled = true;
+      setTimeout(function() {
+         document.getElementById("print_Sticker").disabled = false;
+      }, 2000);
+
    }) .catch(err => {
       // Assuming first entry
       console.log("First Entry");
@@ -295,11 +318,40 @@ function price_calulator()
 
 
 // Insert new entry at the end of the barcode
-function insert_inDB()
+function insert_inDB(item_Details)
 {
    let db = SQL_GB.dbOpen(dbPath);
 
    db.exec('INSERT into inventory(barCode , \
+                                 date, \
+                                 description, \
+                                 landingPrice, \
+                                 sellingPrice, \
+                                 quantity, \
+                                 partyName, \
+                                 withBox) \
+                                 values (?, ?, ?, ?, ?, ?, ?, ?)',
+                                 [next_barCode,
+                                  item_Details.date,
+                                  item_Details.description,
+                                  item_Details.landingPrice,
+                                  item_Details.sellingPrice,
+                                  item_Details.qty,
+                                  item_Details.partyName,
+                                  item_Details.withBox],
+                                  function(err)
+   {
+      if(err)
+      {
+         alert("Failed to update the database");
+         console.log(err);
+      }
+      else {
+         console.log("Updated");
+      }
+   })
+
+   db.exec('INSERT into purchase(barCode , \
                                  date, \
                                  description, \
                                  landingPrice, \
@@ -397,7 +449,7 @@ function insertObject(arr, obj) {
 }
 
 
-async function add_Inventory_Qty()
+function add_Inventory_Qty()
 {
    var add_barCode;
    var add_qty;
@@ -410,20 +462,128 @@ async function add_Inventory_Qty()
       // let statement;
 
       console.log("Adding Qty");
+      var item_Details_1 = new Object();
+
+      updateInventoryInQty(add_barCode).then(data =>
+      {
+         console.log("Updated Entry Successfully ", data);
+
+         document.getElementById("add_Qty_textArea").value = "";
+         document.getElementById("add_BarCode_textArea").value = "";
+
+         new_Qty = (data.quantity + add_qty);
+
+         item_Details_1 = data;
+
+         let db = SQL_GB.dbOpen(dbPath);
+         db.run('UPDATE inventory SET quantity=? WHERE barCode=?',[new_Qty, add_barCode]);
+         SQL_GB.dbClose(db, dbPath)
+
+         insertInPurchase(item_Details_1);
+
+      }). catch(e =>
+      {
+         console.log(e);
+      })
+
+      // let db = SQL_GB.dbOpen(dbPath);
+      //
+      // var statement = db.prepare('SELECT * FROM inventory WHERE barCode = ?',[add_barCode]);
+      // if (statement.step())
+      // {
+      //    item_Details = statement.getAsObject();
+      //    // console.log(item_Details);
+      //    // console.log(item_Details.getAsObject().landingPrice);
+      //    //
+      //    // db = SQL_GB.dbOpen(dbPath);
+      //    //
+      //    //
+      //    // SQL_GB.dbClose(db ,dbPath);
+      //    //
+      //    // document.getElementById("add_Qty_textArea").value = '';
+      //    // document.getElementById("add_BarCode_textArea").value = '';
+      // }
+      //
+      // new_Qty = (item_Details.quantity + add_qty);
+      //
+      // SQL_GB.dbClose(db, dbPath);
+      //
+      // // let db = SQL_GB.dbOpen(dbPath);
+      // console.log(item_Details);
+      // insertInPurchase(item_Details);
+      //
+      // db.run('UPDATE inventory SET quantity=? WHERE barCode=?',[new_Qty, add_barCode]);
+      //
+      // SQL_GB.dbClose(db, dbPath);
+
+   }
+}
+
+
+function insertInPurchase(item_Details_1)
+{
+   let db = SQL_GB.dbOpen(dbPath);
+
+   console.log("Inserting in Purchase table");
+
+   db.exec('INSERT into purchase(barCode , \
+                                 date, \
+                                 description, \
+                                 landingPrice, \
+                                 sellingPrice, \
+                                 quantity, \
+                                 partyName, \
+                                 withBox) \
+                                 values (?, ?, ?, ?, ?, ?, ?, ?)',
+                                 [item_Details_1.barCode,
+                                  item_Details_1.date,
+                                  item_Details_1.description,
+                                  item_Details_1.landingPrice,
+                                  item_Details_1.sellingPrice,
+                                  item_Details_1.qty,
+                                  item_Details_1.partyName,
+                                  item_Details_1.withBox],
+                                  function(err)
+   {
+      if(err)
+      {
+         alert("Failed to update the database");
+         console.log(err);
+      }
+      else {
+         console.log("Updated");
+      }
+   });
+
+   SQL_GB.dbClose(db, dbPath);
+
+}
+
+
+
+function updateInventoryInQty(add_barCode)
+{
+   return new Promise ((resolve, reject) =>
+   {
+      let values;
 
       let db = SQL_GB.dbOpen(dbPath);
 
       var statement = db.prepare('SELECT * FROM inventory WHERE barCode = ?',[add_barCode]);
-      if (statement.step())
-      {
-         new_Qty = (statement.getAsObject().quantity + add_qty);
-
-         let db = SQL_GB.dbOpen(dbPath);
-         db.run('UPDATE inventory SET quantity=? WHERE barCode=?',[new_Qty, add_barCode]);
-         SQL_GB.dbClose(db ,dbPath);
-
-         document.getElementById("add_Qty_textArea").value = '';
-         document.getElementById("add_BarCode_textArea").value = '';
+      try {
+         if (statement.step())
+         {
+            console.log(statement.getAsObject());
+            item_Details = statement.getAsObject();
+            resolve(item_Details);
+         }
+         else {
+           console.log('Error')
+           reject();
+        }
       }
-   }
+      finally{
+         SQL_GB.dbClose(db, dbPath);
+      }
+   });
 }

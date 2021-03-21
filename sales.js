@@ -286,6 +286,9 @@ function __updateUndoneSettlement()
    time_Str = time_Str.concat(date.getSeconds().toString(10));
    console.log("Time is ", time_Str);
 
+   if(sale_list.length == 0)
+      return;
+
    for(item of sale_list)
    {
       total_landingPrice += (item.landingPrice * item.Selling_quantity);
@@ -329,6 +332,11 @@ function sales_print()
    // Update the settlement
    __updateUndoneSettlement();
    ipcRenderer.send("fill_Estimate_Print", sale_list);
+
+   document.getElementById("sales_Button").disabled = true;
+   setTimeout(function() {
+      document.getElementById("sales_Button").disabled = false;
+   }, 3000);
 }
 
 function clear_Barcode(event)
@@ -344,7 +352,13 @@ function new_Sale()
 {
    var table = document.getElementById("sales_table").getElementsByTagName('tbody')[0];
    sale_list = [];
+   calculateSubTotal();
    clear_Table(table);
+
+   document.getElementById("newSale_Button").disabled = true;
+   setTimeout(function() {
+      document.getElementById("newSale_Button").disabled = false;
+   }, 3000);
 
 }
 

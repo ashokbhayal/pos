@@ -33,7 +33,7 @@ ipcRenderer.on("fill_settlement_Print", (content,data) =>
 
       const {timeStr, landingPrice, billingAmount, paidAmount, paidBy} = settlement_list[idx];
 
-      var row = document.createElement('tr') ;
+      var row = document.createElement('tr');
 
       //* use a create table row function,
       //* which takes data and returns element
@@ -70,9 +70,11 @@ ipcRenderer.on("fill_settlement_Print", (content,data) =>
       paidBy_td.textContent = paidBy;
       paidBy_td.style.textAlign = "right"
 
-      row.append( time_td, landing_Price_td, billingAmount_td, paidAmount_td, paidBy_td)
+      row.append(time_td, landing_Price_td, billingAmount_td, paidAmount_td, paidBy_td)
       table.append(row)
 
+      if(parseInt(paidAmount) == 0)
+         continue;
       total_landingPrice += parseInt(landingPrice);
       total_sellingPrice += parseInt(billingAmount);
       total_AmountRcvd += parseInt(paidAmount);

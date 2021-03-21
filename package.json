@@ -34,6 +34,7 @@
     "electron-prebuilt": "^1.4.13",
     "jquery": "^3.5.1",
     "jsbarcode": "^3.11.3",
+    "json2csv": "^5.0.6",
     "jsonfile": "^6.1.0",
     "node-gyp": "^7.1.2",
     "pdf-to-printer": "^1.7.0",
