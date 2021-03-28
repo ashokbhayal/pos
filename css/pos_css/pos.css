@@ -17,6 +17,7 @@ body{
 #item_desc,
 #SP_price_textArea,
 #add_BarCode_textArea,
-#add_Qty_textArea {
+#add_Qty_textArea,
+#print_BarCode_textArea {
   resize: none;
 }
