@@ -147,7 +147,12 @@ function enter_Content(event)
       }
       else
       {
-         enteredBarCode += String.fromCharCode(event.keyCode);
+         var keyValue = event.keyCode;
+         if(keyValue >= 96 && keyValue <= 105)
+         {
+            keyValue -= 48;
+         }
+         enteredBarCode += String.fromCharCode(keyValue);
          console.log(enteredBarCode);
          break;
       }
