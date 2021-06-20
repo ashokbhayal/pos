@@ -299,7 +299,10 @@ function __updateUndoneSettlement()
       total_landingPrice += (item.landingPrice * item.Selling_quantity);
    }
 
-   var total_sellingPrice = grandTotal;
+   // Billing amount is adjusted to subTotal to
+   // avoid confusion during settelemt
+   // var total_sellingPrice = grandTotal;
+   var total_sellingPrice = subTotal;
    var salesTable_Str = JSON.stringify(sale_list);
 
    let db = SQL_GB.dbOpen(dbPath);
