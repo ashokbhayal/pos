@@ -107,6 +107,13 @@ function sleep(ms) {
 
 async function print_Sales()
 {
+   // Total value fix
+   var total_withoutDiscount = document.getElementById("subtotal_th_val").textContent;
+   document.getElementById("total_th_val").textContent = total_withoutDiscount;
+   document.getElementById("discount_td_val").style.visibility = "hidden";
+   document.getElementById("discount_td").style.visibility = "hidden";
+
+
    const print_Count = 2;
    for(var idx = 0; idx <print_Count; idx++)
    {

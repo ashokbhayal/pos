@@ -250,6 +250,10 @@ function price_calulator()
           selling_Price += addVal;
    }
 
+   // Add own price without roundoff
+   if(selling_Price_Temp != null)
+      selling_Price = parseInt(selling_Price_Temp);
+
    console.log("Landing cost is " + landing_Price);
 
    withBox = document.getElementById("withBoxCB");
