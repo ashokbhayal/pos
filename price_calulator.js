@@ -295,8 +295,8 @@ function price_calulator()
    {
       console.log("Resolved promise ", data);
       console.log(data[0]);
-      prev_id = data[0].id;
-      next_barCode = (prev_id + 5001);
+      prev_barCode = data[0].barCode;
+      next_barCode = (prev_barCode + 1);
       insert_inDB(item_Details);
       print_StickerFn(item_Details, next_barCode);
 
