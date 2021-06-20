@@ -1,0 +1,114 @@
+/* html, body {
+    margin: 8px;
+    height: 1in;
+    width: 4in;
+}
+
+h1{
+   margin: auto;
+   width: auto;
+   height: auto;
+} */
+
+h2, p{
+   text-align: center;
+   margin-bottom: 5px;
+   margin-top: 5px;
+
+}
+
+img{
+  width: 60px;
+  display: inline-block;
+  vertical-align: middle;
+/* scale: 50%; */
+}
+
+.shopName{
+   display: inline-block;
+   vertical-align: middle;
+}
+
+#header{
+   text-align: center;
+   vertical-align: middle;
+}
+
+body{
+   margin: 5px;
+   width: 2.75in;
+   text-align:center;
+}
+
+
+#data_p
+{
+   width: 45%;
+   text-align: left;
+   display: inline-block;
+}
+
+#time_p{
+   margin-left: 5px;
+   text-align: right;
+   display: inline-block;
+   width: 45%;
+}
+
+
+html{
+   font-family: Arial, Helvetica, sans-serif;
+}
+
+#sales_PrintTable{
+   width: 100%;
+}
+
+#desc{
+   width: 40%;
+}
+
+#qty{
+   width: 20%;
+}
+
+/* #rate{
+   width: 35%;
+   text-align: right;
+} */
+
+#amount{
+   text-align: right;
+   width: 40%;
+}
+
+
+#total_table{
+   margin-left: 5px;
+   margin-right: 5px;
+   width: 100%;
+   text-align: right;
+}
+
+#subtotal_th, #discount_td,
+#subtotal_th_val, #discount_td_val,
+#total_th, #total_th_val
+{
+   width: 45%;
+};
+
+
+#thankYouNote
+{
+   margin-right: 5px;
+   text-align: center;
+   width: 100%;
+}
+
+@page {
+   size: auto;
+   margin-top: 0px;
+   margin-bottom: 0px;
+   margin-left: 5px;
+   margin-right: 0px;
+}

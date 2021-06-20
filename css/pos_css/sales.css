@@ -1,0 +1,63 @@
+/* table tr {
+    border-bottom:2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-top: 2px solid black;
+} */
+
+
+#sales_table td {
+   padding: 0.2em;
+   vertical-align:middle;
+}
+
+th {
+   font-size: 20px;
+}
+
+#discount_th
+{
+   text-align: right;
+}
+
+
+#total_table
+{
+   bottom: 0px;
+   margin: 20px;
+}
+
+#discount_td
+{
+   font-size: 20px;
+}
+
+#amount
+{
+   text-align: right;
+}
+
+#qty
+{
+   text-align: center;
+}
+
+
+#total_table th, #total_table td {
+   border-left: 2px solid black;
+   border-bottom:2px solid black;
+   border-top: 2px solid black;
+   border-right: 2px solid black;
+   width: 50%;
+}
+
+.my-custom-scrollbar
+{
+position: relative;
+height: 425px;
+overflow: auto;
+overflow-x: hidden;
+}
+.table-wrapper-scroll-y {
+display: block;
+}

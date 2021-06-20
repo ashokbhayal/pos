@@ -1,0 +1,14 @@
+id	date	barCode	description	landingPrice	sellingPrice	quantity	partyName	withBox
+1	HELL	14	Shirt	27	40	53	AB	1
+2	HELL	15	Shirt	28	41	54	CD	1
+3	HELL	16	Shirt	29	42	55	EF	1
+4	HELL	17	Shirt	30	43	56	GH	1
+5	HELL	18	Shirt	31	44	57	IJ	1
+6	HELL	19	Shirt	32	45	58	KL	1
+7	HELL	20	Shirt	33	46	59	MN	0
+8	HELL	21	Shirt	34	47	60	OP	0
+9	HELL	22	Shirt	35	48	61	QR	0
+10	HELL	23	Shirt	36	49	62	ST	0
+11	HELL	24	Shirt	37	50	63	UV	0
+12	HELL	25	Shirt	38	51	64	WX	0
+13	HELL	26	Shirt	39	52	65	YZ	0

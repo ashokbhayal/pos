@@ -5,9 +5,19 @@ body{
    margin-right: 20px;
 }
 
+@page
+{
+   size: 1.2in 1.5in;
+}
+
+
 #price_textArea,
 #party_textArea,
 #qty_textArea,
-#item_desc {
+#item_desc,
+#SP_price_textArea,
+#add_BarCode_textArea,
+#add_Qty_textArea,
+#print_BarCode_textArea {
   resize: none;
 }

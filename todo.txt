@@ -1,0 +1,19 @@
+1) fix delete table
+2) fix subTotal
+3) fix sales print time and date
+
+//NEW
+1) Fix Entry in the Inventory
+2) Fix sales
+3) Fix settlement_pending
+4) Fix settlement_done
+
+
+// Verison 1.0.1
+1) Remove text when qty is added -- Done
+2) Remove text from Purchase price and qty -- Done
+3) Disable print button for 3 seconds -- Done
+4) Add sticker printer in Inventory
+5) Do not print when sales table is empty -- Done
+6) Fix settlement table -- Done
+7) Add barcode at the bottom of the bill

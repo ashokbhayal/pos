@@ -1,2 +1,4 @@
 node_modules/
 inventory.db
+release-builds/
+test-win32-x64

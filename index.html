@@ -2,14 +2,40 @@
 <html>
 <head>
    <meta charset="UTF-8">
-   <title>POS Test Software</title>
+   <title>AAIJI GARMENT POS</title>
    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
    <link rel="stylesheet" href="./css/bootstrap.min.css" />
    <link rel="stylesheet" href="./css/pos_css/pos.css" />
-   <script type="text/javascript" src="./price_calulator.js"></script>
 </head>
 <body>
-   <h1>Test Software</h1>
+   <div class="col-md-12">
+   <header class="header clearfix">
+      <nav>
+         <ul class="nav nav-pills float-right">
+            <li class="nav-item">
+               <a class="nav-link active" href="./index.html">Add Inventory</a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="./sales.html">Sales</a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="./settlement.html">Settlement</a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="./exchange.html">Exchange</a>
+            </li>
+            <li class="nav-item">
+               <!-- <a class="nav-link" href="#" onclick="window.open('', '_self', ''); window.close();">Exit</a> -->
+               <a class="nav-link" href="#" onclick="window.open('', '_self', ''); window.close();">Exit</a>
+            </li>
+         </ul>
+      </nav>
+      <div class="row">
+      </div>
+   </header>
+   </div>
+
+   <h1>Purchase</h1>
 
    </br>
    <div class="row">
@@ -25,12 +51,58 @@
       <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
          <textarea class="form-control param_textarea" rows="1" id="item_desc" placeholder="Item Description"></textarea>
       </div>
+      <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+      <input type="checkbox" id="withBoxCB">
+      <label for="withBoxCB">WITH BOX</label>
+      </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-         <button type="button" class="btn btn-outline-primary" onclick="price_calulator()">Print</button>
+         <button type="button" class="btn btn-outline-primary" id="print_Sticker" onclick="price_calulator()">Print</button>
       </div>
    </div>
    </br>
+   </br>
+   </br>
+
+   <h1>Own Selling Price &emsp; &emsp; &emsp;
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+       Print Barcode</h1>
    <div class="row">
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+         <textarea class="form-control param_textarea" rows="1" id="SP_price_textArea" placeholder="Selling Price"></textarea>
+      </div>
+
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+         <textarea class="form-control param_textarea" rows="1" id="print_BarCode_textArea" placeholder="Barcode"></textarea>
+      </div>
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+         <button type="button" class="btn btn-outline-primary" id="print_barCode" onclick="price_calulator()">Print</button>
+      </div>
+   </div>
+
+   </br>
+   </br>
+   </br>
+
+   <h1>Add Quantity</h1>
+   <div class="row">
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+         <textarea class="form-control param_textarea" rows="1" id="add_BarCode_textArea" placeholder="Barcode"></textarea>
+      </div>
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+         <textarea class="form-control param_textarea" rows="1" id="add_Qty_textArea" placeholder="Quantity"></textarea>
+      </div>
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+         <button type="button" class="btn btn-outline-primary" onclick="add_Inventory_Qty()">Add Qty</button>
+      </div>
+   </div>
+
+
+   <div>
+      <script type="text/javascript" src="./price_calulator.js"></script>
+      <script type="text/javascript" src="./print_Sticker.js"></script>
    </div>
 
 </body>
