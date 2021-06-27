@@ -55,6 +55,7 @@ function createWindow () {
     }
   })
   mainWindow.loadFile("./sales.html");
+  mainWindow.maximize();
   // mainWindow.webContents.openDevTools();
   mainWindow.on("closed", () => {
 
