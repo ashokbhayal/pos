@@ -61,8 +61,14 @@ p
 .mrp_p
 {
    float: left;
-   margin-top: 5px;
+   /* margin-top: 5px; */
    font-size: 1.4em;
+}
+
+
+.art_no
+{
+   float: right;
 }
 
 .landing_Price
@@ -74,7 +80,7 @@ p
 {
    float: right;
    margin: 0;
-   width: 1in;
+   width: inherit;
    /* height: 0.5in; */
 }
 

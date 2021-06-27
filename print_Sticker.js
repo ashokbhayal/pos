@@ -15,8 +15,8 @@ function clearClassVal()
    // for(idx; idx < document.getElementsByClassName("shopName").length; idx++)
    //    hdrName[idx].innerHTML = "";
 
-   for(idx = 0; idx < document.getElementsByClassName("art_no").length; idx++)
-      art_no[idx].innerHTML = "ART NO: ";
+   // for(idx = 0; idx < document.getElementsByClassName("art_no").length; idx++)
+      // art_no[idx].innerHTML = "ART NO: ";
 
    for(idx = 0; idx < document.getElementsByClassName("mrp_p").length; idx++)
       mrp_p[idx].innerHTML = "MRP: ";
@@ -43,11 +43,12 @@ ipcRenderer.on("fillLabelinfo", (content,data) =>
 
    JsBarcode("#barcode", ("00000000" + data.barCode).slice(-8), {
      format: "CODE128",
-     width: 1.6,
+     width: 2,
      height: 30,
      textAlign: "center",
      fontSize: 20,
      font: "Arial",
+     fontOptions: "bold",
      displayValue: true,
      margin: 0
    });
