@@ -15,8 +15,8 @@ function clearClassVal()
    // for(idx; idx < document.getElementsByClassName("shopName").length; idx++)
    //    hdrName[idx].innerHTML = "";
 
-   // for(idx = 0; idx < document.getElementsByClassName("art_no").length; idx++)
-      // art_no[idx].innerHTML = "ART NO: ";
+   for(idx = 0; idx < document.getElementsByClassName("art_no").length; idx++)
+      art_no[idx].innerHTML = "";
 
    for(idx = 0; idx < document.getElementsByClassName("mrp_p").length; idx++)
       mrp_p[idx].innerHTML = "MRP: ";
