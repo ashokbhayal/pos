@@ -47,6 +47,8 @@ function addReturnItem(incomingBarCode, exchangeAmount)
             })
          SQL_GB.dbClose(db ,dbPath);
 
+         print_Exchange(ingData[0].barCode, outgoingBarCode, exchangeAmount);
+
          document.getElementById("incmg_BarCode").value = "";
          document.getElementById("otgng_BarCode").value = "";
          document.getElementById("exch_Amount").value = "";

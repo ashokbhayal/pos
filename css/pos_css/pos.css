@@ -18,6 +18,12 @@ body{
 #SP_price_textArea,
 #add_BarCode_textArea,
 #add_Qty_textArea,
-#print_BarCode_textArea {
+#print_BarCode_textArea,
+#barcode_textArea,
+#price_textArea_Inventory {
   resize: none;
+}
+
+#price_textArea_Inventory {
+   font-size: 130px;
 }
