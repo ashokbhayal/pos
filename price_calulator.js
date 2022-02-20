@@ -2,6 +2,8 @@ const initSqlJs = require('sql.js');
 const fs = require('fs')
 
 var dbPath = './inventory.db'
+var stockPath = './inventory_check.db'
+
 var SQL_GB;
 initSqlJs({
   // Required to load the wasm binary asynchronously. Of course, you can host it wherever you want
@@ -11,20 +13,39 @@ initSqlJs({
 
    SQL_GB = SQL;
 
+   let createDB1 = function(stockPath) {
+
+      let db1 = new SQL.Database()
+
+      console.log("Database created");
+
+      db1.exec("CREATE TABLE  IF NOT EXISTS inventory_check(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT  , \
+                                                    date TEXT(255,0) NOT NULL, \
+                                                    barCode INTEGER NOT NULL, \
+                                                    description TEXT(255,0) NOT NULL, \
+                                                    landingPrice INTEGER NOT NULL, \
+                                                    sellingPrice INTEGER NOT NULL, \
+                                                    quantity INTEGER NOT NULL, \
+                                                    partyName TEXT(255,0) NOT NULL, \
+                                                    withBox INTEGER NOT NULL);",
+                                                    function(err)
+                                                    {
+                                                       if(err)
+                                                       {
+                                                          console.log(err);
+                                                       }
+                                                       console.log("Table created");
+
+                                                    })
+   }
+
 
    let createDb = function (dbPath) {
 
      // Create a database.
      let db = new SQL.Database()
 
-     // let query = fs.readFileSync(
-     // path.join(__dirname, 'db', 'schema.sql'), 'utf8')
-
      console.log("Database created");
-     // let result = db.exec("CREATE TABLE \"people\" ( \
-     //          \"person_id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
-     //          \"first_name\" TEXT(255,0) NOT NULL, \
-     //          \"last_name\" TEXT(255,0) NOT NULL)")
 
      result = db.exec("CREATE TABLE  IF NOT EXISTS inventory(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT  , \
                                               date TEXT(255,0) NOT NULL, \
@@ -115,6 +136,26 @@ initSqlJs({
                                                                 console.log("Table created");
 
                                                              })
+
+       // db.exec("CREATE TABLE  IF NOT EXISTS inventory_check(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT  , \
+       //                                                date TEXT(255,0) NOT NULL, \
+       //                                                barCode INTEGER NOT NULL, \
+       //                                                description TEXT(255,0) NOT NULL, \
+       //                                                landingPrice INTEGER NOT NULL, \
+       //                                                sellingPrice INTEGER NOT NULL, \
+       //                                                quantity INTEGER NOT NULL, \
+       //                                                partyName TEXT(255,0) NOT NULL, \
+       //                                                withBox INTEGER NOT NULL);",
+       //                                                function(err)
+       //                                                {
+       //                                                   if(err)
+       //                                                   {
+       //                                                      console.log(err);
+       //                                                   }
+       //                                                   console.log("Table created");
+       //
+       //                                                })
+
      if (Object.keys(result).length === 0 &&
        typeof result.constructor === 'function' &&
        SQL.dbClose(db, dbPath)) {
@@ -155,6 +196,14 @@ initSqlJs({
     /* The file doesn't exist so create a new database. */
      createDb(dbPath)
   }
+
+  stock_dB = SQL.dbOpen(stockPath);
+  if(stock_dB === null)
+  {
+     console.log("DB not found");
+     createDB1(stockPath)
+  }
+
 })
 .catch(err=>{
    console.log(err)
@@ -470,21 +519,22 @@ function add_Inventory_Qty()
 
       updateInventoryInQty(add_barCode).then(data =>
       {
-         console.log("Updated Entry Successfully ", data);
+         console.log("Updated Entry Successfully ");
+
+         // item_Details_1 = data;
 
          new_Qty = (data.quantity + add_qty);
 
-         item_Details_1 = data;
+         new_Qty = (data.quantity + add_qty);
 
          let db = SQL_GB.dbOpen(dbPath);
          db.run('UPDATE inventory SET quantity=? WHERE barCode=?',[new_Qty, add_barCode]);
-         SQL_GB.dbClose(db, dbPath)
+         SQL_GB.dbClose(db, dbPath);
 
          insertInPurchase(item_Details_1, add_qty);
 
          document.getElementById("add_Qty_textArea").value = "";
          document.getElementById("add_BarCode_textArea").value = "";
-
 
       }). catch(e =>
       {
@@ -525,8 +575,11 @@ function add_Inventory_Qty()
 }
 
 
+
 function insertInPurchase(item_Details_1, updatedQty)
 {
+   item_Details_1.quantity = add_qty;
+
    let db = SQL_GB.dbOpen(dbPath);
 
    console.log("Inserting in Purchase table");
@@ -559,7 +612,7 @@ function insertInPurchase(item_Details_1, updatedQty)
       else {
          console.log("Updated");
       }
-   });
+   })
 
    SQL_GB.dbClose(db, dbPath);
 

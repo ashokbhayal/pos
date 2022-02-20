@@ -87,7 +87,7 @@ initSqlJs({
 function start_TableEntry()
 {
    console.log("Start the entry");
-   fs.createReadStream('stock_batch1.csv')
+   fs.createReadStream('Book111_July_5_2021.csv')
      .pipe(csv({ separator: '\t' }))
      .on('data', (data) => {
         var decoded_Val = "";
