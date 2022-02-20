@@ -521,10 +521,9 @@ function add_Inventory_Qty()
       {
          console.log("Updated Entry Successfully ");
 
-         document.getElementById("add_Qty_textArea").value = "";
-         document.getElementById("add_BarCode_textArea").value = "";
-
          // item_Details_1 = data;
+
+         new_Qty = (data.quantity + add_qty);
 
          new_Qty = (data.quantity + add_qty);
 
@@ -532,7 +531,10 @@ function add_Inventory_Qty()
          db.run('UPDATE inventory SET quantity=? WHERE barCode=?',[new_Qty, add_barCode]);
          SQL_GB.dbClose(db, dbPath);
 
-         setTimeout(insertInPurchase(data, add_qty), 100);
+         insertInPurchase(item_Details_1, add_qty);
+
+         document.getElementById("add_Qty_textArea").value = "";
+         document.getElementById("add_BarCode_textArea").value = "";
 
       }). catch(e =>
       {
@@ -573,13 +575,15 @@ function add_Inventory_Qty()
 }
 
 
-function insertInPurchase(item_Details_1, add_qty)
+
+function insertInPurchase(item_Details_1, updatedQty)
 {
    item_Details_1.quantity = add_qty;
 
    let db = SQL_GB.dbOpen(dbPath);
 
-   console.log("Inserting in Purchase table", item_Details_1);
+   console.log("Inserting in Purchase table");
+   console.log(item_Details_1);
 
    db.exec('INSERT into purchase(barCode , \
                                  date, \
@@ -595,7 +599,7 @@ function insertInPurchase(item_Details_1, add_qty)
                                   item_Details_1.description,
                                   item_Details_1.landingPrice,
                                   item_Details_1.sellingPrice,
-                                  item_Details_1.qty,
+                                  updatedQty,
                                   item_Details_1.partyName,
                                   item_Details_1.withBox],
                                   function(err)
