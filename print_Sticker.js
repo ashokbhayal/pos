@@ -62,6 +62,64 @@ ipcRenderer.on("fillLabelinfo", (content,data) =>
 });
 
 
+function getDatafromDB(barCode)
+{
+   return new Promise ((resolve, reject) =>
+   {
+      let values;
+
+      let db = SQL_GB.dbOpen(dbPath);
+
+      var statement = db.prepare('SELECT * FROM inventory WHERE barCode = ?',[barCode]);
+      try {
+         if (statement.step())
+         {
+            console.log(statement.getAsObject());
+            item_Details = statement.getAsObject();
+            resolve(item_Details);
+         }
+         else {
+           console.log('Error')
+           reject();
+        }
+      }
+      finally{
+         SQL_GB.dbClose(db, dbPath);
+      }
+   });
+}
+
+
+function printExcessSticker()
+{
+   var coded_Inital = [];
+   var barCode;
+   barCode = parseInt(document.getElementById("print_BarCode_textArea").value);
+
+   getDatafromDB(barCode).then(data =>
+   {
+      console.log(data);
+      var landing_Price = data.landingPrice;
+      for(idx = 0; landing_Price > 0; idx++)
+      {
+         var value = (landing_Price % 10);
+         coded_Inital[idx] = shop_Inital[value];
+         // coded_Inital = coded_Inital.concat(shop_Inital[value]);
+         landing_Price = parseInt((landing_Price / 10));
+      }
+
+      coded_Inital = coded_Inital.reverse();
+      coded_Inital = coded_Inital.join("");
+
+      data.codedInital = coded_Inital;
+      print_StickerFn(data, barCode);
+   });
+
+   document.getElementById("print_BarCode_textArea").value = "";
+
+}
+
+
 function print_StickerFn(item_Details, next_barCode)
 {
    item_Details.barCode = next_barCode;
