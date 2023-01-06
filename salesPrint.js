@@ -75,8 +75,6 @@ ipcRenderer.on("fill_Estimate_Print", (content,data) =>
       row.append( desc, qty, rate, sp)
       table.append(row)
 
-      print_Sales()
-
       // ipcRenderer.send("printEstimate");
       // sleep(1000);
       // console.log("Printing estimate again");
@@ -85,6 +83,8 @@ ipcRenderer.on("fill_Estimate_Print", (content,data) =>
       // calculateSubTotal(idx);
 
    }
+
+   print_Sales()
 
 });
 
@@ -112,7 +112,6 @@ async function print_Sales()
    document.getElementById("total_th_val").textContent = total_withoutDiscount;
    document.getElementById("discount_td_val").style.visibility = "hidden";
    document.getElementById("discount_td").style.visibility = "hidden";
-
 
    const print_Count = 2;
    for(var idx = 0; idx <print_Count; idx++)

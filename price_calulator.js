@@ -370,6 +370,37 @@ function price_calulator()
 };
 
 
+function calculatPrice()
+{
+   price = document.getElementById("price_textArea").value;
+   price = parseInt(price);
+   console.log("Price is " + price);
+
+   price *= 1.05;
+
+   landing_Price = price * 1.2;
+   landing_Price = parseInt(landing_Price);
+
+   {
+      selling_Price = landing_Price * 1.7;
+      selling_Price = parseInt(selling_Price);
+   }
+
+   var lastVal = 0;
+   lastVal = selling_Price % 10;
+   if(lastVal != 0)
+   {
+       var addVal = 10 - lastVal;
+       if(lastVal >= 1 && lastVal <= 4)
+          selling_Price -= lastVal;
+       else
+          selling_Price += addVal;
+   }
+
+   document.getElementById("calculatedPrice_textArea").value = selling_Price;
+}
+
+
 // Insert new entry at the end of the barcode
 function insert_inDB(item_Details)
 {

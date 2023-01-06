@@ -20,7 +20,8 @@ body{
 #add_Qty_textArea,
 #print_BarCode_textArea,
 #barcode_textArea,
-#price_textArea_Inventory {
+#price_textArea_Inventory,
+#calculatedPrice_textArea {
   resize: none;
 }
 

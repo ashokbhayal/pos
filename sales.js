@@ -121,7 +121,9 @@ function calculateSubTotal()
       }
    }
 
-   grandTotal = subTotal - discount;
+   // grandTotal = subTotal - discount;
+
+   grandTotal = subTotal;
 
    total_t.subTotal = subTotal;
    total_t.discount = discount;

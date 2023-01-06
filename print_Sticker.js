@@ -112,6 +112,7 @@ function printExcessSticker()
       coded_Inital = coded_Inital.join("");
 
       data.codedInital = coded_Inital;
+      data.qty = 1;
       print_StickerFn(data, barCode);
    });
 
